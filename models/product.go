@@ -14,8 +14,8 @@ type Product struct {
 	Price      int
 	Options1   []Options `gorm:"type:jsonb"`
 	IsActive   bool      `gorm:"not null, default:'true'"`
-	CategoryID uint
-	ProviderID uint
+	CategoryID uint      `gorm:"not null"`
+	ProviderID uint      `gorm:"not null"`
 }
 
 type Options struct {
