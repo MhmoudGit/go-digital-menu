@@ -30,22 +30,22 @@ func Connect() {
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	} else {
-		log.Fatal("database connected successfully...")
+		log.Println("database connected successfully...")
 	}
 }
 
-func AutoMigrateDb(models []interface{}) {
+func AutoMigrateDb(models ...interface{}) {
 	// // AutoMigrate will create tables if they don't exist based on the model structs.
-	err := Db.AutoMigrate(models)
+	err := Db.AutoMigrate(models...)
 	if err != nil {
 		log.Fatalf("Error migrating database tables: %v", err)
 	}
-	log.Fatal("Tables created successfully...")
+	log.Println("Tables created/updated successfully...")
 }
 
 func Close() {
 	// Close db
 	dbInstance, _ := Db.DB()
 	_ = dbInstance.Close()
-	log.Fatal("database is closed successfully...")
+	log.Println("database is closed successfully...")
 }

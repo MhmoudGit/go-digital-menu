@@ -12,8 +12,8 @@ type Product struct {
 	EnDetails  string `gorm:"not null"`
 	Image      string
 	Price      int
-	Options1   []Options
-	IsActive   bool `gorm:"not null, default:'true'"`
+	Options1   []Options `gorm:"type:jsonb"`
+	IsActive   bool      `gorm:"not null, default:'true'"`
 	CategoryID uint
 	ProviderID uint
 }
