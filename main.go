@@ -18,3 +18,13 @@ func main() {
 	database.AutoMigrateDb(modelsToMigrate...)
 	defer database.Close()
 }
+
+//create category
+// category := &models.PostCategory{
+// 	UpdateCategory: models.UpdateCategory{
+// 		Name:   "Category Name",
+// 		EnName: "Category EnName",
+// 		Logo:   "Category Logo",
+// 	},
+// 	ProviderID: 1, // Example value for ProviderID
+// }
