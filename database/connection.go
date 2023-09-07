@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/MhmoudGit/go-digital-menu/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -34,9 +35,16 @@ func Connect() {
 	}
 }
 
-func AutoMigrateDb(models ...interface{}) {
+func AutoMigrateDb() {
+	// Define a slice of model structs that you want to migrate.
+	modelsToMigrate := []interface{}{
+		&models.Provider{},
+		&models.Category{},
+		&models.Product{},
+		// Add more model structs here if needed.
+	}
 	// // AutoMigrate will create tables if they don't exist based on the model structs.
-	err := Db.AutoMigrate(models...)
+	err := Db.AutoMigrate(modelsToMigrate...)
 	if err != nil {
 		log.Fatalf("Error migrating database tables: %v", err)
 	}
