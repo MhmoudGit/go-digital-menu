@@ -36,12 +36,12 @@ func SingleCategory(w http.ResponseWriter, r *http.Request) {
 
 func PostCategory(w http.ResponseWriter, r *http.Request) {
 	var validCategory models.PostCategory
-	h.JsonDecoder(r.Body, validCategory, w)
+	h.JsonDecoder(r.Body, &validCategory, w)
 	err := h.CreateCategory(database.Db, &validCategory)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
-	h.JsonMarshal(validCategory, w)
+	h.JsonMarshal(&validCategory, w)
 }
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {}

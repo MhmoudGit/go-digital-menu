@@ -9,7 +9,7 @@ type Category struct {
 	Name       string    `json:"name"`
 	EnName     string    `json:"enName"`
 	Logo       string    `json:"logo"`
-	ProviderID uint      `json:"providerId"`
+	ProviderID uint      `gorm:"not null" json:"providerId"`
 	Products   []Product `json:"-"`
 }
 
