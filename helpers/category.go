@@ -17,14 +17,14 @@ func GetCategories(db *gorm.DB, providerID uint) ([]models.Category, error) {
 	return categories, nil
 }
 
-func GetCategory(db *gorm.DB, id uint) error {
+func GetCategory(db *gorm.DB, id uint) (models.Category, error) {
 	var category models.Category
 	result := db.First(&category, id)
 	if result.Error != nil {
-		return result.Error
+		return category, result.Error
 	}
 	log.Println(category)
-	return nil
+	return category, nil
 }
 
 func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
