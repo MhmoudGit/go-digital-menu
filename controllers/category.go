@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
-	"gorm.io/gorm"
 )
 
-func AllCategories(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
-	data, err := h.GetCategories(db, 1)
+func AllCategories(w http.ResponseWriter, r *http.Request) {
+	data, err := h.GetCategories(database.Db, 1)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}

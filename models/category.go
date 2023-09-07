@@ -6,11 +6,11 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name       string `json:"name"`
-	EnName     string `json:"enName"`
-	Logo       string `json:"logo"`
-	ProviderID uint   `json:"providerId"`
-	Products   []Product
+	Name       string    `json:"name"`
+	EnName     string    `json:"enName"`
+	Logo       string    `json:"logo"`
+	ProviderID uint      `json:"providerId"`
+	Products   []Product `json:"-"`
 }
 
 // Schema
