@@ -11,6 +11,8 @@ import (
 func CategoriesRoutes(r chi.Router, db *gorm.DB) {
 	r.Route("/categories", func(r chi.Router) {
 		// get request for home route that takes a handler function
-		r.Get("/", )
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			controllers.AllCategories(w, r, db)
+		})
 	})
 }
