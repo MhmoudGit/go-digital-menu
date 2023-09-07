@@ -37,11 +37,20 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 
 	// Create the category in the database
 	result := db.Create(categoryModel)
-
 	if result.Error != nil {
 		return result.Error
 	}
 	log.Println("category was created successfully....")
+	return nil
+}
+
+func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id uint) error {
+	var categoryToUpdate models.Category
+	result := db.First(&categoryToUpdate, id).Save(updateCategory)
+	if result.Error != nil {
+		return result.Error
+	}
+	log.Println("category was updated successfully....")
 	return nil
 }
 
