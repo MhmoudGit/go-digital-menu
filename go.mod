@@ -3,6 +3,7 @@ module github.com/MhmoudGit/go-digital-menu
 go 1.21.0
 
 require (
+	github.com/go-chi/chi/v5 v5.0.10
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.13.0
 	gorm.io/driver/postgres v1.5.2
@@ -15,5 +16,6 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	golang.org/x/text v0.13.0 // indirect
 )
