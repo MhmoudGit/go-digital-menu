@@ -63,13 +63,3 @@ func DeleteCategory(db *gorm.DB, id uint) error {
 	log.Println("category was deleted successfully....")
 	return nil
 }
-
-//create category
-// category := &models.PostCategory{
-// 	UpdateCategory: models.UpdateCategory{
-// 		Name:   "Category Name",
-// 		EnName: "Category EnName",
-// 		Logo:   "Category Logo",
-// 	},
-// 	ProviderID: 1, // Example value for ProviderID
-// }
