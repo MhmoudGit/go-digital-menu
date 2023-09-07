@@ -6,6 +6,7 @@ import (
 
 	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
+	"github.com/MhmoudGit/go-digital-menu/models"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -33,7 +34,15 @@ func SingleCategory(w http.ResponseWriter, r *http.Request) {
 	h.JsonMarshal(data, w)
 }
 
-func PostCategory(w http.ResponseWriter, r *http.Request) {}
+func PostCategory(w http.ResponseWriter, r *http.Request) {
+	var validCategory models.PostCategory
+	h.JsonDecoder(r.Body, validCategory, w)
+	err := h.CreateCategory(database.Db, &validCategory)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+	}
+	h.JsonMarshal(validCategory, w)
+}
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {}
 

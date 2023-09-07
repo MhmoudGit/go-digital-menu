@@ -3,6 +3,7 @@ package routers
 import (
 	c "github.com/MhmoudGit/go-digital-menu/controllers"
 	"github.com/go-chi/chi/v5"
+	h "github.com/MhmoudGit/go-digital-menu/helpers"
 )
 
 func CategoriesRoutes(r chi.Router) {
@@ -14,5 +15,6 @@ func CategoriesRoutes(r chi.Router) {
 		r.Get("/{id}", c.SingleCategory)
 		r.Put("/{id}", c.UpdateCategory)
 		r.Delete("/{id}", c.DeleteCategory)
+		r.Put("/image", h.UploadFile)
 	})
 }
