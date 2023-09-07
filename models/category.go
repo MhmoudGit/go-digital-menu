@@ -6,10 +6,10 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name       string `gorm:"not null"`
-	EnName     string `gorm:"not null"`
-	Logo       string `gorm:"not null"`
-	ProviderID uint   `gorm:"not null"`
+	Name       string `json:"name"`
+	EnName     string `json:"enName"`
+	Logo       string `json:"logo"`
+	ProviderID uint   `json:"providerId"`
 	Products   []Product
 }
 
@@ -21,11 +21,16 @@ type UpdateCategory struct {
 }
 
 type PostCategory struct {
-	UpdateCategory
-	ProviderID uint `json:"providerId"`
+	Name       string `json:"name"`
+	EnName     string `json:"enName"`
+	Logo       string `json:"logo"`
+	ProviderID uint   `json:"providerId"`
 }
 
-type GetCategory struct {
-	gorm.Model
-	PostCategory
-}
+// type GetCategory struct {
+// 	gorm.Model
+// 	Name       string `json:"name"`
+// 	EnName     string `json:"enName"`
+// 	Logo       string `json:"logo"`
+// 	ProviderID uint   `json:"providerId"`
+// }
