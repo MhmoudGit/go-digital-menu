@@ -7,6 +7,7 @@ import (
 	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
 	"github.com/MhmoudGit/go-digital-menu/models"
+	u "github.com/MhmoudGit/go-digital-menu/utils"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -15,7 +16,7 @@ func AllCategories(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	h.JsonMarshal(data, w)
+	u.JsonMarshal(data, w)
 }
 
 func SingleCategory(w http.ResponseWriter, r *http.Request) {
@@ -31,17 +32,19 @@ func SingleCategory(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	h.JsonMarshal(data, w)
+	u.JsonMarshal(data, w)
 }
 
 func PostCategory(w http.ResponseWriter, r *http.Request) {
 	var validCategory models.PostCategory
-	h.JsonDecoder(r.Body, &validCategory, w)
+	// store the json request body into my struct
+	u.JsonDecoder(r.Body, &validCategory, w)
+	// store the struct data into the database
 	err := h.CreateCategory(database.Db, &validCategory)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
-	h.JsonMarshal(&validCategory, w)
+	u.JsonMarshal(&validCategory, w)
 }
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {}
