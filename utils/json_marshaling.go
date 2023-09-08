@@ -19,11 +19,13 @@ func JsonMarshal(data any, w http.ResponseWriter) {
 	w.Write(jsonData)
 }
 
-func JsonDecoder(from io.Reader, to any, w http.ResponseWriter) {
+func JsonDecoder(from io.Reader, to interface{}, w http.ResponseWriter) error {
 	// Decode the JSON request body into the struct
 	decoder := json.NewDecoder(from)
 	if err := decoder.Decode(&to); err != nil {
-		http.Error(w, "Failed to parse JSON request body", http.StatusBadRequest)
-		return
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		http.Error(w, "Failed to parse JSON request body", http.StatusUnprocessableEntity)
+		return err
 	}
+	return nil
 }

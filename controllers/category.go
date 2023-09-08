@@ -46,39 +46,17 @@ func PostCategory(w http.ResponseWriter, r *http.Request) {
 	u.JsonMarshal(&validCategory, w)
 }
 
-// func PostCategory(w http.ResponseWriter, r *http.Request) {
-// 	var validCategory models.PostCategory
-// 	// store the json request body into my struct
-// 	u.JsonDecoder(r.Body, &validCategory, w)
-// 	// store the struct data into the database
-// 	err := h.CreateCategory(database.Db, &validCategory)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusUnprocessableEntity)
-// 	}
-// 	u.JsonMarshal(&validCategory, w)
-// }
-
-func DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	err := h.DeleteCategory(database.Db, id)
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-	}
-	w.WriteHeader(http.StatusAccepted)
-}
-
 func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	u.ParseMultipartForm(w, r)
-	validCategory := models.UpdateCategory{
-		Name:   r.FormValue("name"),
-		EnName: r.FormValue("enName"),
-		// Logo:   u.UploadFile(w, r, "logo"),
-	}
-	// store the struct data into the database
-	err := h.UpdateCategory(database.Db, &validCategory, id)
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
+	var validCategory models.UpdateCategory
+	// store the json request body into my struct
+	err := u.JsonDecoder(r.Body, &validCategory, w)
+	if err == nil {
+		// store the struct data into the database
+		err := h.UpdateCategory(database.Db, &validCategory, id)
+		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+		}
 	}
 	u.JsonMarshal(&validCategory, w)
 }
@@ -89,10 +67,21 @@ func UpdateCategoryImage(w http.ResponseWriter, r *http.Request) {
 	validCategoryImage := models.UpdateCategoryImage{
 		Logo: u.UploadFile(w, r, "logo"),
 	}
-	// store the struct data into the database
-	err := h.UpdateCategoryImage(database.Db, &validCategoryImage, id)
+	if validCategoryImage.Logo != "" {
+		// store the struct data into the database
+		err := h.UpdateCategoryImage(database.Db, &validCategoryImage, id)
+		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+		}
+	}
+	u.JsonMarshal(&validCategoryImage, w)
+}
+
+func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	err := h.DeleteCategory(database.Db, id)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
-	u.JsonMarshal(&validCategoryImage, w)
+	w.WriteHeader(http.StatusAccepted)
 }

@@ -29,11 +29,3 @@ type PostCategory struct {
 	Logo       string `json:"logo"`
 	ProviderID uint   `json:"providerId"`
 }
-
-// type GetCategory struct {
-// 	gorm.Model
-// 	Name       string `json:"name"`
-// 	EnName     string `json:"enName"`
-// 	Logo       string `json:"logo"`
-// 	ProviderID uint   `json:"providerId"`
-// }

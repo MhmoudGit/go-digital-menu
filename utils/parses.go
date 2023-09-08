@@ -19,7 +19,7 @@ func ParseMultipartForm(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data, including the uploaded file
 	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
 	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
+		http.Error(w, "Unable to parse form", http.StatusUnprocessableEntity)
 		return
 	}
 }
