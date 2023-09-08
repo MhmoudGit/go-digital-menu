@@ -9,19 +9,12 @@ import (
 	"time"
 )
 
-func UploadFile(w http.ResponseWriter, r *http.Request) {
-	// Parse the form data, including the uploaded file
-	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
-	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
-		return
-	}
-
+func UploadFile(w http.ResponseWriter, r *http.Request, fieldName string) string {
 	// Get the file from the form
-	file, _, err := r.FormFile("file") // "file" is the name of the file input field in your form
+	file, _, err := r.FormFile(fieldName) // "file" is the name of the file input field in your form
 	if err != nil {
 		http.Error(w, "Unable to get file from form", http.StatusBadRequest)
-		return
+		return ""
 	}
 	defer file.Close()
 
@@ -33,7 +26,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	newFile, err := os.Create(filePath)
 	if err != nil {
 		http.Error(w, "Unable to create file", http.StatusInternalServerError)
-		return
+		return ""
 	}
 	defer newFile.Close()
 
@@ -41,11 +34,11 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	_, err = io.Copy(newFile, file)
 	if err != nil {
 		http.Error(w, "Unable to copy file data", http.StatusInternalServerError)
-		return
+		return ""
 	}
 
 	// return the file name
-	fmt.Fprintf(w, "File uploaded and saved as: %s", uniqueFilename)
+	return uniqueFilename
 }
 
 func generateUniqueFilename() string {
