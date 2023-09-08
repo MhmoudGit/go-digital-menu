@@ -54,6 +54,16 @@ func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id uint)
 	return nil
 }
 
+func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id uint) error {
+	var categoryToUpdate models.Category
+	result := db.First(&categoryToUpdate, id).Save(CategoryImage)
+	if result.Error != nil {
+		return result.Error
+	}
+	log.Println("category was updated successfully....")
+	return nil
+}
+
 func DeleteCategory(db *gorm.DB, id uint) error {
 	var category models.Category
 	result := db.Delete(&category, id)

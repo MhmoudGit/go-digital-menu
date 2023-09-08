@@ -17,7 +17,10 @@ type Category struct {
 type UpdateCategory struct {
 	Name   string `json:"name"`
 	EnName string `json:"enName"`
-	Logo   string `json:"logo"`
+}
+
+type UpdateCategoryImage struct {
+	Logo string `json:"logo"`
 }
 
 type PostCategory struct {

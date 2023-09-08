@@ -14,6 +14,6 @@ func CategoriesRoutes(r chi.Router) {
 		r.Get("/{id}", c.SingleCategory)
 		r.Put("/{id}", c.UpdateCategory)
 		r.Delete("/{id}", c.DeleteCategory)
-		// r.Put("/image", u.UploadFile)
+		r.Patch("/{id}/image", c.UpdateCategoryImage)
 	})
 }

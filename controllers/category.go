@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
@@ -20,37 +19,27 @@ func AllCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func SingleCategory(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
 	// Convert the string to a uint
-	uintId, err := strconv.ParseUint(id, 10, 0)
-	if err != nil {
-		// Handle the error if the conversion fails
-		http.Error(w, http.StatusText(404), http.StatusNotFound)
-		return
-	}
-	data, err := h.GetCategory(database.Db, uint(uintId))
+	data, err := h.GetCategory(database.Db, id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	u.JsonMarshal(data, w)
 }
 
 func PostCategory(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data, including the uploaded file
-	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
-	if err != nil {
-		http.Error(w, "Unable to parse form", http.StatusBadRequest)
-		return
-	}
-	uint64Id, _ := strconv.ParseUint(r.FormValue("providerId"), 10, 0)
+	u.ParseMultipartForm(w, r)
 	validCategory := models.PostCategory{
 		Name:       r.FormValue("name"),
 		EnName:     r.FormValue("enName"),
 		Logo:       u.UploadFile(w, r, "logo"),
-		ProviderID: uint(uint64Id),
+		ProviderID: u.ParseUint64(w, r.FormValue("providerId")),
 	}
 	// store the struct data into the database
-	err = h.CreateCategory(database.Db, &validCategory)
+	err := h.CreateCategory(database.Db, &validCategory)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
@@ -69,6 +58,41 @@ func PostCategory(w http.ResponseWriter, r *http.Request) {
 // 	u.JsonMarshal(&validCategory, w)
 // }
 
-func DeleteCategory(w http.ResponseWriter, r *http.Request) {}
+func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	err := h.DeleteCategory(database.Db, id)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+	}
+	w.WriteHeader(http.StatusAccepted)
+}
 
-func UpdateCategory(w http.ResponseWriter, r *http.Request) {}
+func UpdateCategory(w http.ResponseWriter, r *http.Request) {
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	u.ParseMultipartForm(w, r)
+	validCategory := models.UpdateCategory{
+		Name:   r.FormValue("name"),
+		EnName: r.FormValue("enName"),
+		// Logo:   u.UploadFile(w, r, "logo"),
+	}
+	// store the struct data into the database
+	err := h.UpdateCategory(database.Db, &validCategory, id)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+	}
+	u.JsonMarshal(&validCategory, w)
+}
+
+func UpdateCategoryImage(w http.ResponseWriter, r *http.Request) {
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	u.ParseMultipartForm(w, r)
+	validCategoryImage := models.UpdateCategoryImage{
+		Logo: u.UploadFile(w, r, "logo"),
+	}
+	// store the struct data into the database
+	err := h.UpdateCategoryImage(database.Db, &validCategoryImage, id)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+	}
+	u.JsonMarshal(&validCategoryImage, w)
+}

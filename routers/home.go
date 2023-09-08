@@ -15,12 +15,12 @@ func HomeRoutes(r chi.Router) {
 
 		// Define a route to serve the HTML file
 		r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "./views/openapi.html") // Replace "index.html" with your HTML file path
+			http.ServeFile(w, r, "./views/openapi.html")
 		})
 
 		// Define a route to serve the HTML file
 		r.Get("/openapi", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "./openapi.yaml") // Replace "index.html" with your HTML file path
+			http.ServeFile(w, r, "./openapi.yaml")
 		})
 	})
 }
