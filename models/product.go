@@ -6,16 +6,16 @@ import (
 
 type Product struct {
 	gorm.Model
-	Name       string `gorm:"not null"`
-	EnName     string `gorm:"not null"`
-	Details    string `gorm:"not null"`
-	EnDetails  string `gorm:"not null"`
-	Image      string
-	Price      int
-	Options1   []Options `gorm:"type:jsonb"`
-	IsActive   bool      `gorm:"not null, default:'true'"`
-	CategoryID uint      `gorm:"not null"`
-	ProviderID uint      `gorm:"not null"`
+	Name       string    `gorm:"not null" json:"name"`
+	EnName     string    `gorm:"not null" json:"enName"`
+	Details    string    `gorm:"not null" json:"details"`
+	EnDetails  string    `gorm:"not null" json:"enDetails"`
+	Image      string    `json:"image"`
+	Price      int       `json:"price"`
+	Options1   []Options `gorm:"type:jsonb" json:"options1"`
+	IsActive   bool      `gorm:"not null, default:'true'" json:"isActive"`
+	CategoryID uint      `gorm:"not null" json:"categoryId"`
+	ProviderID uint      `gorm:"not null" json:"providerId"`
 }
 
 type Options struct {
@@ -38,7 +38,18 @@ type PostProduct struct {
 	ProviderID uint      `json:"providerId"`
 }
 
-type GetProduct struct{
-	gorm.Model
-	PostProduct
+type UpdateProduct struct {
+	Name       string    `json:"name"`
+	EnName     string    `json:"enName"`
+	Details    string    `json:"details"`
+	EnDetails  string    `json:"enDetails"`
+	Price      int       `json:"price"`
+	Options1   []Options `json:"options1"`
+	IsActive   bool      `json:"isActive"`
+	CategoryID uint      `json:"categoryId"`
+	ProviderID uint      `json:"providerId"`
+}
+
+type UpdateProductImage struct {
+	Image string `json:"image"`
 }
