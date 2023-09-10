@@ -11,7 +11,9 @@ import (
 )
 
 func AllProducts(w http.ResponseWriter, r *http.Request) {
-	data, err := h.GetProducts(database.Db, 1)
+	providerQueryParam := u.ParseUint64(w, r.URL.Query().Get("providerid"))
+	categoryQueryParam := u.ParseUint64(w, r.URL.Query().Get("categoryid"))
+	data, err := h.GetProducts(database.Db, providerQueryParam, categoryQueryParam)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}

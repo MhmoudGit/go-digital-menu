@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetProducts(db *gorm.DB, providerID uint) ([]models.Product, error) {
+func GetProducts(db *gorm.DB, providerID uint, categoryID uint) ([]models.Product, error) {
 	var products []models.Product
-	result := db.Where("provider_id = ?", providerID).Find(&products)
+	result := db.Where("provider_id = ? AND category_id = ? AND is_active = true", providerID, categoryID).Find(&products)
 	if result.Error != nil {
 		return nil, result.Error
 	}
