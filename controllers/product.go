@@ -59,11 +59,8 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validProduct, w)
 	if err != nil {
-		// store the struct data into the database
-		// err := h.UpdateProduct(database.Db, &validProduct, id)
-		// if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		// }
+		return
 	}
 	err = h.UpdateProduct(database.Db, &validProduct, id)
 	if err != nil {

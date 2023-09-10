@@ -51,13 +51,16 @@ func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	var validCategory models.UpdateCategory
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validCategory, w)
-	if err == nil {
-		// store the struct data into the database
-		err := h.UpdateCategory(database.Db, &validCategory, id)
-		if err != nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-		}
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
 	}
+	err = h.UpdateCategory(database.Db, &validCategory, id)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
 	u.JsonMarshal(&validCategory, w)
 }
 
