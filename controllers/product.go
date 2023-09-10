@@ -40,13 +40,15 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 		Image:      u.UploadFile(w, r, "image"),
 		Price:      u.Parseint(w, r.FormValue("price")),
 		IsActive:   r.FormValue("isActive") == "true",
-		CategoryID: u.ParseUint64(w, r.FormValue("providerId")),
+		CategoryID: u.ParseUint64(w, r.FormValue("categoryId")),
 		ProviderID: u.ParseUint64(w, r.FormValue("providerId")),
 	}
 	// store the struct data into the database
 	err := h.CreateProduct(database.Db, &validProduct)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.Write([]byte(err.Error()))
+		return
 	}
 	u.JsonMarshal(&validProduct, w)
 }
@@ -56,12 +58,17 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	var validProduct models.UpdateProduct
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validProduct, w)
-	if err == nil {
+	if err != nil {
 		// store the struct data into the database
-		err := h.UpdateProduct(database.Db, &validProduct, id)
-		if err != nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-		}
+		// err := h.UpdateProduct(database.Db, &validProduct, id)
+		// if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		// }
+	}
+	err = h.UpdateProduct(database.Db, &validProduct, id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	u.JsonMarshal(&validProduct, w)
 }

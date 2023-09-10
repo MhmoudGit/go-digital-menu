@@ -26,6 +26,7 @@ func main() {
 	// api routes
 	routes.HomeRoutes(r)
 	routes.CategoriesRoutes(r)
+	routes.ProductsRoutes(r)
 
 	// listening on port 8000
 	http.ListenAndServe("127.0.0.1:8000", r)
