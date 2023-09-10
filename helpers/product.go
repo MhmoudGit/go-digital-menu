@@ -13,7 +13,6 @@ func GetProducts(db *gorm.DB, providerID uint) ([]models.Product, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	log.Println(products)
 	return products, nil
 }
 
@@ -23,7 +22,6 @@ func GetProduct(db *gorm.DB, id uint) (models.Product, error) {
 	if result.Error != nil {
 		return product, result.Error
 	}
-	log.Println(product)
 	return product, nil
 }
 

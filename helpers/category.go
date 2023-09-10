@@ -13,7 +13,6 @@ func GetCategories(db *gorm.DB, providerID uint) ([]models.Category, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	log.Println(categories)
 	return categories, nil
 }
 
@@ -23,7 +22,6 @@ func GetCategory(db *gorm.DB, id uint) (models.Category, error) {
 	if result.Error != nil {
 		return category, result.Error
 	}
-	log.Println(category)
 	return category, nil
 }
 
