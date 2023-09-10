@@ -38,7 +38,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request, fieldName string) string
 	}
 
 	// return the file name
-	return uniqueFilename
+	return fmt.Sprintf("/uploads/%v", uniqueFilename)
 }
 
 func generateUniqueFilename() string {
