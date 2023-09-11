@@ -13,14 +13,20 @@ func HomeRoutes(r chi.Router) {
 			w.Write([]byte(`{"hello": "world"}`))
 		})
 
-		// Define a route to serve the HTML file
-		r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "./views/openapi.html")
-		})
+		// // Define a route to serve the HTML file
+		// r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
+		// 	http.ServeFile(w, r, "./views/openapi.html")
+		// })
 
-		// Define a route to serve the HTML file
-		r.Get("/openapi", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "./openapi.yaml")
+		// // Define a route to serve the HTML file
+		// r.Get("/openapi", func(w http.ResponseWriter, r *http.Request) {
+		// 	http.ServeFile(w, r, "./openapi.yaml")
+		// })
+
+		// uploads folder
+		uploadsDir := "./uploads" // Change this to the path of your uploads folder
+		r.Get("/uploads/*", func(w http.ResponseWriter, r *http.Request) {
+			http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadsDir))).ServeHTTP(w, r)
 		})
 	})
 }
