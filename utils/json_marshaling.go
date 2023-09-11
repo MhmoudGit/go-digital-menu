@@ -24,8 +24,10 @@ func JsonDecoder(from io.Reader, to interface{}, w http.ResponseWriter) error {
 	decoder := json.NewDecoder(from)
 	if err := decoder.Decode(&to); err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, "Failed to parse JSON request body", http.StatusUnprocessableEntity)
 		return err
 	}
+	w.Header().Set("Content-Type", "application/json")
 	return nil
 }

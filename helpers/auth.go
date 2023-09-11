@@ -2,31 +2,31 @@ package helpers
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 // verify Provider password
 func AuthinticateProvider(db *gorm.DB, email, password string) (bool, error) {
-	Provider, err := getProviderByEmail(db, email)
+	Provider, err := GetProviderByEmail(db, email)
 	if err != nil {
 		return false, err
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(Provider.Password), []byte(password))
+	err = Provider.VerifyPassword(password)
 	if err != nil {
-		// Handle error, e.g. return authentication failure
 		return false, err
 	}
 	// Passwords match
 	return true, nil
 }
 
-func GenerateAccessToken(providerID int, role string) (string, error) {
+func GenerateAccessToken(providerID uint) (string, error) {
 	// Load the environment variables from the .env file
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("Error loading .env file")
@@ -35,7 +35,6 @@ func GenerateAccessToken(providerID int, role string) (string, error) {
 	// Define the claims for the token
 	claims := jwt.MapClaims{}
 	claims["id"] = providerID
-	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 
 	// Generate the token using HMAC SHA256 algorithm
@@ -45,4 +44,28 @@ func GenerateAccessToken(providerID int, role string) (string, error) {
 		return "", err
 	}
 	return signedToken, nil
+}
+
+// decrypt the token
+func Decrypt(token *jwt.Token) (interface{}, error) {
+	// Load the environment variables from the .env file
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		return nil, fmt.Errorf("unexpected signing method")
+	}
+	return []byte(jwtSecret), nil
+}
+
+// check token and remove Bearer
+func CheckToken(token string, w http.ResponseWriter) string {
+	if token == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Invalid Credentials"))
+		return ""
+	}
+	token = strings.Replace(token, "Bearer ", "", 1)
+	return token
 }
