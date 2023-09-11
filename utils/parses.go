@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func ParseUint64(w http.ResponseWriter, str string) uint {
@@ -35,4 +36,14 @@ func ParseMultipartForm(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to parse form", http.StatusUnprocessableEntity)
 		return
 	}
+}
+
+func ParseTime(dateString string) time.Time{
+	// Parse the string into a time.Time value
+	parsedTime, err := time.Parse(time.RFC3339, dateString)
+	if err != nil {
+		fmt.Println("Error parsing time:", err)
+		return parsedTime
+	}
+	return parsedTime
 }
