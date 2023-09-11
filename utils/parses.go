@@ -38,9 +38,9 @@ func ParseMultipartForm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ParseTime(dateString string) time.Time{
+func ParseTime(dateString string) time.Time {
 	// Parse the string into a time.Time value
-	parsedTime, err := time.Parse(time.RFC3339, dateString)
+	parsedTime, err := time.Parse("15:04", dateString)
 	if err != nil {
 		fmt.Println("Error parsing time:", err)
 		return parsedTime

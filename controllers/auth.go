@@ -61,7 +61,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Whatsapp:    r.FormValue("whatsapp"),
 		Phone:       r.FormValue("phone"),
 		Address:     r.FormValue("address"),
-		EnAddress:   r.FormValue("enAdress"),
+		EnAddress:   r.FormValue("enAddress"),
 		Facebook:    r.FormValue("facebook"),
 		Theme:       r.FormValue("theme"),
 		OpenedFrom:  u.ParseTime(r.FormValue("openedFrom")),
@@ -70,16 +70,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// check if email exists in db
 	_, err := h.GetProviderByEmail(database.Db, validProvider.Email)
-	if err != nil {
-		err := h.CreateProvider(database.Db, &validProvider)
-		if err != nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			w.Write([]byte(err.Error()))
-			return
-		}
-	} else {
+	if err == nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		http.Error(w, "Try again", http.StatusBadRequest)
+		w.Write([]byte("Try again"))
 		return
 	}
+	err = h.CreateProvider(database.Db, &validProvider)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Provider created successfully"))
 }

@@ -8,7 +8,7 @@ import (
 func AuthRoutes(r chi.Router) {
 	r.Route("/auth", func(r chi.Router) {
 
-		r.Post("/register", c.PostCategory)
+		r.Post("/register", c.RegisterHandler)
 		r.Post("/login", c.LoginHandler)
 	})
 }

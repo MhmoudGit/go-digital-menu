@@ -24,7 +24,7 @@ type Provider struct {
 	OpenedFrom  time.Time  `gorm:"not null" json:"openedFrom"`
 	OpenedTo    time.Time  `gorm:"not null" json:"openedTo"`
 	Url         string     `json:"url"`
-	IsActive    bool       `gorm:"not null, default:'true'" json:"isActive"`
+	IsActive    bool       `gorm:"not null;default:true" json:"isActive"`
 	Categories  []Category `json:"-"`
 	Products    []Product  `json:"-"`
 }
