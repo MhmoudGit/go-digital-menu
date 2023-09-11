@@ -25,6 +25,15 @@ func GetProvider(db *gorm.DB, id uint) (models.Provider, error) {
 	return Provider, nil
 }
 
+func getProviderByEmail(db *gorm.DB, email string) (models.Provider, error) {
+	var Provider models.Provider
+	result := db.First(&Provider, email)
+	if result.Error != nil {
+		return Provider, result.Error
+	}
+	return Provider, nil
+}
+
 func CreateProvider(db *gorm.DB, Provider *models.PostProvider) error {
 	ProviderModel := &models.Provider{
 		Email:       Provider.Email,
