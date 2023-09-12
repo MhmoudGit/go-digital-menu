@@ -1,5 +1,5 @@
 openapi: 3.0.0
 info:
-  version: "0.1"
+  version: '0.1'
   title: Go Digital Menu
   description: Alef menu inplemented in golang
