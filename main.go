@@ -19,7 +19,7 @@ func main() {
 	// declaring chi mux as r
 	r := chi.NewRouter()
 	// A good base middleware stack
-	r.Use(corsMiddleware.Handler)
+	r.Use(cors.Handler(corsMiddleware))
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -34,4 +34,9 @@ func main() {
 }
 
 // Configure CORS middleware
-var corsMiddleware = cors.AllowAll()
+var corsMiddleware = cors.Options{
+	AllowedOrigins:   []string{"*"}, // Replace with your frontend's URL
+	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	AllowedHeaders:   []string{"*"},
+	AllowCredentials: true,
+}
