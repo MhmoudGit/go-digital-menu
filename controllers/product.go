@@ -32,6 +32,7 @@ func SingleProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostProduct(w http.ResponseWriter, r *http.Request) {
+	providerId := h.GetProviderIdClaim(r)
 	// Parse the form data, including the uploaded file
 	u.ParseMultipartForm(w, r)
 	validProduct := models.PostProduct{
@@ -43,7 +44,7 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 		Price:      u.Parseint(w, r.FormValue("price")),
 		IsActive:   r.FormValue("isActive") == "true",
 		CategoryID: u.ParseUint64(w, r.FormValue("categoryId")),
-		ProviderID: u.ParseUint64(w, r.FormValue("providerId")),
+		ProviderID: providerId,
 	}
 	// store the struct data into the database
 	err := h.CreateProduct(database.Db, &validProduct)
@@ -57,6 +58,7 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	providerId := h.GetProviderIdClaim(r)
 	var validProduct models.UpdateProduct
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validProduct, w)
@@ -64,7 +66,7 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
-	err = h.UpdateProduct(database.Db, &validProduct, id)
+	err = h.UpdateProduct(database.Db, &validProduct, id, providerId)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -74,13 +76,14 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProductImage(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	providerId := h.GetProviderIdClaim(r)
 	u.ParseMultipartForm(w, r)
 	validProductImage := models.UpdateProductImage{
 		Image: u.UploadFile(w, r, "image"),
 	}
 	if validProductImage.Image != "" {
 		// store the struct data into the database
-		err := h.UpdateProductImage(database.Db, &validProductImage, id)
+		err := h.UpdateProductImage(database.Db, &validProductImage, id, providerId)
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		}
@@ -90,7 +93,8 @@ func UpdateProductImage(w http.ResponseWriter, r *http.Request) {
 
 func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	err := h.DeleteProduct(database.Db, id)
+	providerId := h.GetProviderIdClaim(r)
+	err := h.DeleteProduct(database.Db, id, providerId)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}

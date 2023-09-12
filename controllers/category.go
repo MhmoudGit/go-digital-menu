@@ -19,6 +19,15 @@ func AllCategories(w http.ResponseWriter, r *http.Request) {
 	u.JsonMarshal(data, w)
 }
 
+func AllCategoriesPrivate(w http.ResponseWriter, r *http.Request) {
+	providerId := h.GetProviderIdClaim(r)
+	data, err := h.GetCategories(database.Db, providerId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+	u.JsonMarshal(data, w)
+}
+
 func SingleCategory(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
 	// Convert the string to a uint
@@ -31,13 +40,14 @@ func SingleCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostCategory(w http.ResponseWriter, r *http.Request) {
+	providerId := h.GetProviderIdClaim(r)
 	// Parse the form data, including the uploaded file
 	u.ParseMultipartForm(w, r)
 	validCategory := models.PostCategory{
 		Name:       r.FormValue("name"),
 		EnName:     r.FormValue("enName"),
 		Logo:       u.UploadFile(w, r, "logo"),
-		ProviderID: u.ParseUint64(w, r.FormValue("providerId")),
+		ProviderID: providerId,
 	}
 	// store the struct data into the database
 	err := h.CreateCategory(database.Db, &validCategory)
@@ -49,6 +59,7 @@ func PostCategory(w http.ResponseWriter, r *http.Request) {
 
 func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	providerId := h.GetProviderIdClaim(r)
 	var validCategory models.UpdateCategory
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validCategory, w)
@@ -56,7 +67,7 @@ func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
-	err = h.UpdateCategory(database.Db, &validCategory, id)
+	err = h.UpdateCategory(database.Db, &validCategory, id, providerId)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
@@ -67,13 +78,14 @@ func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 
 func UpdateCategoryImage(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	providerId := h.GetProviderIdClaim(r)
 	u.ParseMultipartForm(w, r)
 	validCategoryImage := models.UpdateCategoryImage{
 		Logo: u.UploadFile(w, r, "logo"),
 	}
 	if validCategoryImage.Logo != "" {
 		// store the struct data into the database
-		err := h.UpdateCategoryImage(database.Db, &validCategoryImage, id)
+		err := h.UpdateCategoryImage(database.Db, &validCategoryImage, id, providerId)
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		}
@@ -83,7 +95,8 @@ func UpdateCategoryImage(w http.ResponseWriter, r *http.Request) {
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	err := h.DeleteCategory(database.Db, id)
+	providerId := h.GetProviderIdClaim(r)
+	err := h.DeleteCategory(database.Db, id, providerId)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}

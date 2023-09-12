@@ -1,13 +1,29 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"os"
+
+	"github.com/go-chi/jwtauth/v5"
+	"github.com/joho/godotenv"
 
 	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
 	"github.com/MhmoudGit/go-digital-menu/models"
 	u "github.com/MhmoudGit/go-digital-menu/utils"
 )
+
+var TokenAuth *jwtauth.JWTAuth = jwtauth.New("HS256", []byte(getSecret()), nil)
+
+func getSecret() string {
+	// Load the environment variables from the .env file
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	jwtSecret := os.Getenv("JWT_SECRET")
+	return jwtSecret
+}
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var loginForm models.Login
@@ -32,7 +48,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Generate an access token for the authenticated provider
-		accessToken, err := h.GenerateAccessToken(provider.ID)
+		accessToken, err := h.GenerateAccessToken(provider.ID, TokenAuth)
 		if err != nil {
 			http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
 			return

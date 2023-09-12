@@ -47,9 +47,9 @@ func CreateProduct(db *gorm.DB, Product *models.PostProduct) error {
 	return nil
 }
 
-func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id uint) error {
+func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id, providerId uint) error {
 	var ProductToUpdate models.Product
-	result := db.First(&ProductToUpdate, id).Save(updateProduct)
+	result := db.First(&ProductToUpdate, id, providerId).Save(updateProduct)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -57,9 +57,9 @@ func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id uint) er
 	return nil
 }
 
-func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id uint) error {
+func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id, providerId uint) error {
 	var ProductToUpdate models.Product
-	result := db.First(&ProductToUpdate, id).Save(ProductImage)
+	result := db.First(&ProductToUpdate, id, providerId).Save(ProductImage)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -67,9 +67,9 @@ func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id
 	return nil
 }
 
-func DeleteProduct(db *gorm.DB, id uint) error {
+func DeleteProduct(db *gorm.DB, id, providerId uint) error {
 	var Product models.Product
-	result := db.Delete(&Product, id)
+	result := db.Delete(&Product, id, providerId)
 	if result.Error != nil {
 		return result.Error
 	}

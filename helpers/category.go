@@ -42,9 +42,9 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 	return nil
 }
 
-func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id uint) error {
+func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, providerId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id).Save(updateCategory)
+	result := db.First(&categoryToUpdate, id, providerId).Save(updateCategory)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -52,9 +52,9 @@ func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id uint)
 	return nil
 }
 
-func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id uint) error {
+func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id, providerId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id).Save(CategoryImage)
+	result := db.First(&categoryToUpdate, id, providerId).Save(CategoryImage)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -62,9 +62,9 @@ func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage,
 	return nil
 }
 
-func DeleteCategory(db *gorm.DB, id uint) error {
+func DeleteCategory(db *gorm.DB, id, providerId uint) error {
 	var category models.Category
-	result := db.Delete(&category, id)
+	result := db.Delete(&category, id, providerId)
 	if result.Error != nil {
 		return result.Error
 	}
