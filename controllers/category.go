@@ -16,7 +16,10 @@ func AllCategories(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
-	u.JsonMarshal(data, w)
+	// // json response
+	// u.JsonMarshal(data, w)
+	// html response
+	u.ParseHtml(w, data, "./views/categories.html")
 }
 
 func AllCategoriesPrivate(w http.ResponseWriter, r *http.Request) {

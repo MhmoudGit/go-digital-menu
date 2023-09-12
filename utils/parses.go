@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"time"
@@ -46,4 +47,19 @@ func ParseTime(dateString string) time.Time {
 		return parsedTime
 	}
 	return parsedTime
+}
+
+func ParseHtml(w http.ResponseWriter, data any, fileName string) {
+	// Parse the template from the HTML file
+	tmpl, err := template.ParseFiles(fileName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNoContent)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
