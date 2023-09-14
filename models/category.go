@@ -10,7 +10,7 @@ type Category struct {
 	EnName     string    `json:"enName"`
 	Logo       string    `json:"logo"`
 	ProviderID uint      `gorm:"not null" json:"providerId"`
-	Products   []Product `json:"-"`
+	Products   []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:CategoryID" json:"-"`
 }
 
 // Schema

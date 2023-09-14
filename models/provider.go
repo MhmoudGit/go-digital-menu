@@ -25,8 +25,8 @@ type Provider struct {
 	OpenedTo    time.Time  `gorm:"not null" json:"openedTo"`
 	Url         string     `json:"url"`
 	IsActive    bool       `gorm:"not null;default:true" json:"isActive"`
-	Categories  []Category `json:"-"`
-	Products    []Product  `json:"-"`
+	Categories  []Category `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ProviderID" json:"-"`
+	Products    []Product  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ProviderID" json:"-"`
 }
 
 // Verify Password.
