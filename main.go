@@ -27,6 +27,7 @@ func main() {
 	routes.HomeRoutes(r)
 	routes.CategoriesRoutes(r)
 	routes.ProductsRoutes(r)
+	routes.ProvidersRoutes(r)
 	routes.AuthRoutes(r)
 
 	// listening on port 8000
