@@ -30,7 +30,7 @@ func main() {
 	routes.AuthRoutes(r)
 
 	// listening on port 8000
-	http.ListenAndServe("127.0.0.1:3000", r)
+	http.ListenAndServe("127.0.0.1:8000", r)
 }
 
 // Configure CORS middleware
