@@ -17,6 +17,10 @@ func HomeRoutes(r chi.Router) {
 			http.ServeFile(w, r, "./views/openapi.html")
 		})
 
+		r.Get("/openapi.yaml", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, "./openapi.yaml")
+		})
+
 		// uploads folder
 		uploadsDir := "./uploads" // Change this to the path of your uploads folder
 		r.Get("/uploads/*", func(w http.ResponseWriter, r *http.Request) {
