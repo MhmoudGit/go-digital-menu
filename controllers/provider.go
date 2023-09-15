@@ -15,8 +15,7 @@ func SingleProvider(w http.ResponseWriter, r *http.Request) {
 	// Convert the string to a uint
 	data, err := h.GetProvider(database.Db, id)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		http.Error(w, "404 Not found", http.StatusNotFound)
+		u.NotFound(w)
 		return
 	}
 	u.JsonMarshal(data, w)
