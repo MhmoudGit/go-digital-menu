@@ -3,3 +3,68 @@ info:
   version: '0.1'
   title: Go Digital Menu
   description: Alef menu inplemented in golang
+servers:
+  - url: http://localhost:8000
+paths:
+  /providers/{id}:
+    get:
+      summary: Get a provider
+      description: Retrieve a single provider by id.
+      responses:
+        '200':
+          description: Provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  createdAt:
+                    type: timestamp
+                    format: '%Y-%m-%dT%H:%M:%SZ'
+                  updatedAt:
+                    type: timestamp
+                    format: '%Y-%m-%dT%H:%M:%SZ'
+                  deletedAt:
+                    type: timestamp
+                    format: '%Y-%m-%dT%H:%M:%SZ'
+                  email:
+                    type: string
+                  image:
+                    type: string
+                  name:
+                    type: string
+                  enName:
+                    type: string
+                  serviceType:
+                    type: string
+                  whatsapp:
+                    type: string
+                  phone:
+                    type: string
+                  adress:
+                    type: string
+                  enAdress:
+                    type: string
+                  facebook:
+                    type: string
+                  theme:
+                    type: string
+                  openedFrom:
+                    type: timestamp
+                    format: '%Y-%m-%dT%H:%M:%SZ'
+                  openedTo:
+                    type: timestamp
+                    format: '%Y-%m-%dT%H:%M:%SZ'
+                  url:
+                    type: string
+                  isActive:
+                    type: boolean
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the user to retrieve.
+          required: true
+          schema:
+            type: integer
