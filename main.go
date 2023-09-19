@@ -25,8 +25,8 @@ func main() {
 	r.Use(middleware.Recoverer)
 	// api routes
 	routes.HomeRoutes(r)
-	routes.CategoriesRoutes(r)
-	routes.ProductsRoutes(r)
+	// routes.CategoriesRoutes(r)
+	// routes.ProductsRoutes(r)
 	routes.ProvidersRoutes(r)
 	routes.AuthRoutes(r)
 

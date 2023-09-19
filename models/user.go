@@ -28,6 +28,14 @@ func (u *User) VerifyPassword(password string) error {
 	return err
 }
 
+// Verify Password.
+func (u *User) VerifyActivity(isActive bool) bool {
+	if u.IsActive == true {
+		return true
+	}
+	return false
+}
+
 // HashPassword securely hashes the provided password and sets it in the PasswordHash field.
 func (u *User) HashPassword(password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -41,15 +49,15 @@ func (u *User) HashPassword(password string) error {
 // initiate new user
 func NewUser(duration int, planId uint, email, password, name, phone string) *User {
 	return &User{
-		Email:     email,
-		Password:  password,
-		Name:      name,
-		Phone:     phone,
-		StartDate: time.Now(),
-		EndDate:   time.Now().AddDate(0, duration, 0),
-		Paid:      true,
+		Email:      email,
+		Password:   password,
+		Name:       name,
+		Phone:      phone,
+		StartDate:  time.Now(),
+		EndDate:    time.Now().AddDate(0, duration, 0),
+		Paid:       true,
 		IsVerified: false,
-		IsActive:  true,
-		PlanID:    planId,
+		IsActive:   true,
+		PlanID:     planId,
 	}
 }

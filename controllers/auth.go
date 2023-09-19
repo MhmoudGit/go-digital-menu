@@ -27,35 +27,34 @@ func getSecret() string {
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var loginForm models.Login
-	// Authenticate the provider and retrieve the provider ID
+	// Authenticate the User and retrieve the User ID
 	// Parse the request body
 	err := u.JsonDecoder(r.Body, &loginForm, w)
 	if err != nil {
 		http.Error(w, "wrong email or password", http.StatusBadRequest)
 		return
 	}
-	// authinticate provider
-	providerAuth, err := h.AuthinticateProvider(database.Db, loginForm.Email, loginForm.Password)
+	// authinticate User
+	userAuth, err := h.AuthinticateUser(database.Db, loginForm.Email, loginForm.Password)
 	if err != nil {
 		http.Error(w, "wrong email or password", http.StatusUnauthorized)
 		return
 	}
-
-	if providerAuth {
-		provider, err := h.GetProviderByEmail(database.Db, loginForm.Email)
-		if err != nil {
-			http.Error(w, "wrong email or password", http.StatusUnauthorized)
-			return
-		}
-		// Generate an access token for the authenticated provider
-		accessToken, err := h.GenerateAccessToken(provider.ID, TokenAuth)
+	user, err := h.GetUserByEmail(database.Db, loginForm.Email)
+	if err != nil {
+		http.Error(w, "wrong email or password", http.StatusUnauthorized)
+		return
+	}
+	if user.IsActive && userAuth {
+		// Generate an access token for the authenticated User
+		accessToken, err := h.GenerateAccessToken(user.ID, TokenAuth)
 		if err != nil {
 			http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
 			return
 		}
 		// Return the access token to the client
 		w.Header().Set("Authorization", "Bearer "+accessToken)
-		u.JsonMarshal(&provider, w)
+		u.JsonMarshal(&user, w)
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -90,5 +89,5 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Provider created successfully"))
+	w.Write([]byte("User created successfully"))
 }

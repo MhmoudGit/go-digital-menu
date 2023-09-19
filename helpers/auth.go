@@ -11,11 +11,11 @@ import (
 
 // verify User password
 func AuthinticateUser(db *gorm.DB, email, password string) (bool, error) {
-	User, err := GetUserByEmail(db, email)
+	user, err := GetUserByEmail(db, email)
 	if err != nil {
 		return false, err
 	}
-	err = User.VerifyPassword(password)
+	err = user.VerifyPassword(password)
 	if err != nil {
 		return false, err
 	}
@@ -23,10 +23,10 @@ func AuthinticateUser(db *gorm.DB, email, password string) (bool, error) {
 	return true, nil
 }
 
-func GenerateAccessToken(UserID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
+func GenerateAccessToken(userID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
 	// TokenAuth = jwtauth.New("HS256", []byte(jwtSecret), nil)
 	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
-		"id":  UserID,
+		"id":  userID,
 		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	})
 	return tokenString, nil
