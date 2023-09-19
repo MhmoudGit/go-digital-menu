@@ -38,7 +38,7 @@ func Connect() {
 func AutoMigrateDb() {
 	// Define a slice of model structs that you want to migrate.
 	modelsToMigrate := []interface{}{
-		&models.Provider{},
+		&models.Restaurant{},
 		&models.Category{},
 		&models.Product{},
 		&models.User{},

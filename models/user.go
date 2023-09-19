@@ -55,7 +55,7 @@ func NewUser(duration int, planId uint, email, password, name, phone string) *Us
 		Phone:      phone,
 		StartDate:  time.Now(),
 		EndDate:    time.Now().AddDate(0, duration, 0),
-		Paid:       true,
+		Paid:       false,
 		IsVerified: false,
 		IsActive:   true,
 		PlanID:     planId,
