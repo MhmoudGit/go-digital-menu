@@ -27,15 +27,15 @@ func GetProduct(db *gorm.DB, id uint) (models.Product, error) {
 
 func CreateProduct(db *gorm.DB, Product *models.PostProduct) error {
 	ProductModel := &models.Product{
-		Name:       Product.Name,
-		EnName:     Product.EnName,
-		Details:    Product.Details,
-		EnDetails:  Product.EnDetails,
-		Image:      Product.Image,
-		Price:      Product.Price,
-		IsActive:   Product.IsActive,
-		CategoryID: Product.CategoryID,
-		ProviderID: Product.ProviderID,
+		Name:         Product.Name,
+		EnName:       Product.EnName,
+		Details:      Product.Details,
+		EnDetails:    Product.EnDetails,
+		Image:        Product.Image,
+		Price:        Product.Price,
+		IsActive:     Product.IsActive,
+		CategoryID:   Product.CategoryID,
+		RestaurantID: Product.RestaurantID,
 	}
 
 	// Create the Product in the database

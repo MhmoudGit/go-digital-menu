@@ -30,7 +30,7 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 		Name:       category.Name,
 		EnName:     category.EnName,
 		Logo:       category.Logo,
-		ProviderID: category.ProviderID,
+		RestaurantID: category.RestaurantID,
 	}
 
 	// Create the category in the database

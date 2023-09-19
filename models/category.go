@@ -6,11 +6,11 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name       string    `json:"name"`
-	EnName     string    `json:"enName"`
-	Logo       string    `json:"logo"`
-	ProviderID uint      `gorm:"not null" json:"providerId"`
-	Products   []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:CategoryID" json:"-"`
+	Name         string    `json:"name"`
+	EnName       string    `json:"enName"`
+	Logo         string    `json:"logo"`
+	RestaurantID uint      `gorm:"not null" json:"restaurantID"`
+	Products     []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:CategoryID" json:"-"`
 }
 
 // Schema
@@ -24,8 +24,8 @@ type UpdateCategoryImage struct {
 }
 
 type PostCategory struct {
-	Name       string `json:"name"`
-	EnName     string `json:"enName"`
-	Logo       string `json:"logo"`
-	ProviderID uint   `json:"providerId"`
+	Name         string `json:"name"`
+	EnName       string `json:"enName"`
+	Logo         string `json:"logo"`
+	RestaurantID uint   `json:"restaurantID"`
 }

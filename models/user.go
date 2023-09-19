@@ -9,17 +9,17 @@ import (
 
 type User struct {
 	gorm.Model
-	Email      string    `gorm:"not null;index;unique" json:"email"`
-	Password   string    `gorm:"not null" json:"-"`
-	Name       string    `gorm:"not null" json:"name"`
-	Phone      string    `gorm:"not null" json:"phone"`
-	StartDate  time.Time `gorm:"not null" json:"startDate"`
-	EndDate    time.Time `gorm:"not null" json:"endDate"`
-	Paid       bool      `gorm:"not null, default:'false'" json:"paid"`
-	IsVerified bool      `gorm:"not null, default:'false'" json:"isVerified"`
-	IsActive   bool      `gorm:"not null, default:'true'" json:"isActive"`
-	PlanID     uint      `gorm:"not null" json:"planId"`
-	// Restaurant  Restaurant `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID" json:"-"`
+	Email      string     `gorm:"not null;index;unique" json:"email"`
+	Password   string     `gorm:"not null" json:"-"`
+	Name       string     `gorm:"not null" json:"name"`
+	Phone      string     `gorm:"not null" json:"phone"`
+	StartDate  time.Time  `gorm:"not null" json:"startDate"`
+	EndDate    time.Time  `gorm:"not null" json:"endDate"`
+	Paid       bool       `gorm:"not null, default:'false'" json:"paid"`
+	IsVerified bool       `gorm:"not null, default:'false'" json:"isVerified"`
+	IsActive   bool       `gorm:"not null, default:'true'" json:"isActive"`
+	PlanID     uint       `gorm:"not null" json:"planId"`
+	Restaurant Restaurant `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID" json:"-"`
 }
 
 // Verify Password.
@@ -30,10 +30,7 @@ func (u *User) VerifyPassword(password string) error {
 
 // Verify Password.
 func (u *User) VerifyActivity(isActive bool) bool {
-	if u.IsActive == true {
-		return true
-	}
-	return false
+	return u.IsActive
 }
 
 // HashPassword securely hashes the provided password and sets it in the PasswordHash field.
