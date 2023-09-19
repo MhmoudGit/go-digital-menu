@@ -9,13 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// verify Provider password
-func AuthinticateProvider(db *gorm.DB, email, password string) (bool, error) {
-	Provider, err := GetProviderByEmail(db, email)
+// verify User password
+func AuthinticateUser(db *gorm.DB, email, password string) (bool, error) {
+	User, err := GetUserByEmail(db, email)
 	if err != nil {
 		return false, err
 	}
-	err = Provider.VerifyPassword(password)
+	err = User.VerifyPassword(password)
 	if err != nil {
 		return false, err
 	}
@@ -23,16 +23,16 @@ func AuthinticateProvider(db *gorm.DB, email, password string) (bool, error) {
 	return true, nil
 }
 
-func GenerateAccessToken(providerID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
+func GenerateAccessToken(UserID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
 	// TokenAuth = jwtauth.New("HS256", []byte(jwtSecret), nil)
 	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
-		"id":  providerID,
+		"id":  UserID,
 		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	})
 	return tokenString, nil
 }
 
-func GetProviderIdClaim(r *http.Request) uint {
+func GetUserIdClaim(r *http.Request) uint {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	var iduint uint
 	id, ok := claims["id"].(float64)

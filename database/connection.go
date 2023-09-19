@@ -41,6 +41,7 @@ func AutoMigrateDb() {
 		&models.Provider{},
 		&models.Category{},
 		&models.Product{},
+		&models.User{},
 		// Add more model structs here if needed.
 	}
 	// // AutoMigrate will create tables if they don't exist based on the model structs.

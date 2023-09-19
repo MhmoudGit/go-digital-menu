@@ -67,32 +67,23 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the form data, including the uploaded file
 	u.ParseMultipartForm(w, r)
-	validProvider := models.PostProvider{
-		Email:       r.FormValue("email"),
-		Password:    r.FormValue("password"),
-		Image:       u.UploadFile(w, r, "image"),
-		Name:        r.FormValue("name"),
-		EnName:      r.FormValue("enName"),
-		ServiceType: r.FormValue(("serviceType")),
-		Whatsapp:    r.FormValue("whatsapp"),
-		Phone:       r.FormValue("phone"),
-		Address:     r.FormValue("address"),
-		EnAddress:   r.FormValue("enAddress"),
-		Facebook:    r.FormValue("facebook"),
-		Theme:       r.FormValue("theme"),
-		OpenedFrom:  u.ParseTime(r.FormValue("openedFrom")),
-		OpenedTo:    u.ParseTime(r.FormValue("openedTo")),
-		Url:         r.FormValue("url"),
-	}
+	newUser := models.NewUser(
+		u.Parseint(w, r.FormValue("duration")),
+		u.ParseUint64(w, r.FormValue("planId")),
+		r.FormValue("email"),
+		r.FormValue("password"),
+		r.FormValue("name"),
+		r.FormValue("phone"),
+	)
 	// check if email exists in db
-	_, err := h.GetProviderByEmail(database.Db, validProvider.Email)
+	_, err := h.GetUserByEmail(database.Db, newUser.Email)
 	if err == nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		http.Error(w, "Try again", http.StatusBadRequest)
 		w.Write([]byte("Try again"))
 		return
 	}
-	err = h.CreateProvider(database.Db, &validProvider)
+	err = h.CreateUser(database.Db, newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		w.Write([]byte(err.Error()))
