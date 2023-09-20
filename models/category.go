@@ -10,6 +10,7 @@ type Category struct {
 	EnName       string    `json:"enName"`
 	Logo         string    `json:"logo"`
 	RestaurantID uint      `gorm:"not null" json:"restaurantID"`
+	UserID       uint      `gorm:"not null" json:"-"`
 	Products     []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:CategoryID" json:"-"`
 }
 
@@ -28,4 +29,5 @@ type PostCategory struct {
 	EnName       string `json:"enName"`
 	Logo         string `json:"logo"`
 	RestaurantID uint   `json:"restaurantID"`
+	UserID       uint   `json:"userID"`
 }

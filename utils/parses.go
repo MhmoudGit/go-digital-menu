@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 	"time"
@@ -25,7 +24,7 @@ func Parseint(w http.ResponseWriter, str string) int {
 		// Handle the error if the conversion fails
 		err := fmt.Sprintf("%v should be of type int", &str)
 		http.Error(w, err, http.StatusUnprocessableEntity)
-		return intStr
+		return 0
 	}
 	return intStr
 }
@@ -47,19 +46,4 @@ func ParseTime(dateString string) time.Time {
 		return parsedTime
 	}
 	return parsedTime
-}
-
-func ParseHtml(w http.ResponseWriter, data any, fileName string) {
-	// Parse the template from the HTML file
-	tmpl, err := template.ParseFiles(fileName)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNoContent)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 }

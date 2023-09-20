@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetCategories(db *gorm.DB, providerID uint) ([]models.Category, error) {
+func GetCategories(db *gorm.DB, userID uint) ([]models.Category, error) {
 	var categories []models.Category
-	result := db.Where("provider_id = ?", providerID).Find(&categories)
+	result := db.Where("user_id = ?", userID).Find(&categories)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -27,10 +27,11 @@ func GetCategory(db *gorm.DB, id uint) (models.Category, error) {
 
 func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 	categoryModel := &models.Category{
-		Name:       category.Name,
-		EnName:     category.EnName,
-		Logo:       category.Logo,
+		Name:         category.Name,
+		EnName:       category.EnName,
+		Logo:         category.Logo,
 		RestaurantID: category.RestaurantID,
+		UserID:       category.UserID,
 	}
 
 	// Create the category in the database
@@ -42,9 +43,9 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 	return nil
 }
 
-func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, providerId uint) error {
+func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, userId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id, providerId).Save(updateCategory)
+	result := db.First(&categoryToUpdate, id, userId).Save(updateCategory)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -52,9 +53,9 @@ func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, prov
 	return nil
 }
 
-func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id, providerId uint) error {
+func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id, userId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id, providerId).Save(CategoryImage)
+	result := db.First(&categoryToUpdate, id, userId).Save(CategoryImage)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -62,9 +63,9 @@ func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage,
 	return nil
 }
 
-func DeleteCategory(db *gorm.DB, id, providerId uint) error {
+func DeleteCategory(db *gorm.DB, id, userId uint) error {
 	var category models.Category
-	result := db.Delete(&category, id, providerId)
+	result := db.Delete(&category, id, userId)
 	if result.Error != nil {
 		return result.Error
 	}

@@ -1,6 +1,9 @@
 package models
 
 import (
+	"encoding/json"
+	"log"
+
 	"gorm.io/gorm"
 )
 
@@ -12,11 +15,12 @@ type Product struct {
 	EnDetails    string    `gorm:"not null" json:"enDetails"`
 	Image        string    `json:"image"`
 	Price        int       `json:"price"`
-	Options1     []Options `gorm:"type:jsonb" json:"options1"`
-	Options2     []Options `gorm:"type:jsonb" json:"options2"`
+	Options1     []Options `json:"options1"`
+	Options2     []Options `json:"options2"`
 	IsActive     bool      `gorm:"not null;default:true" json:"isActive"`
 	CategoryID   uint      `gorm:"not null" json:"categoryId"`
 	RestaurantID uint      `gorm:"not null" json:"restaurantID"`
+	UserID       uint      `gorm:"not null" json:"-"`
 }
 
 type Options struct {
@@ -38,6 +42,7 @@ type PostProduct struct {
 	IsActive     bool      `json:"isActive"`
 	CategoryID   uint      `json:"categoryId"`
 	RestaurantID uint      `json:"restaurantID"`
+	UserID       uint      `json:"userId"`
 }
 
 type UpdateProduct struct {
@@ -53,4 +58,15 @@ type UpdateProduct struct {
 
 type UpdateProductImage struct {
 	Image string `json:"image"`
+}
+
+func CreateOptions(o string) []Options {
+	var options []Options
+	// Unmarshal the JSON string into the struct
+	err := json.Unmarshal([]byte(o), &options)
+	if err != nil {
+		log.Fatalln(err)
+		return nil
+	}
+	return options
 }
