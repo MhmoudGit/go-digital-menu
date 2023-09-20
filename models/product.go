@@ -1,7 +1,9 @@
 package models
 
 import (
+	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"log"
 
 	"gorm.io/gorm"
@@ -9,18 +11,18 @@ import (
 
 type Product struct {
 	gorm.Model
-	Name         string    `gorm:"not null" json:"name"`
-	EnName       string    `gorm:"not null" json:"enName"`
-	Details      string    `gorm:"not null" json:"details"`
-	EnDetails    string    `gorm:"not null" json:"enDetails"`
-	Image        string    `json:"image"`
-	Price        int       `json:"price"`
-	Options1     []Options `json:"options1"`
-	Options2     []Options `json:"options2"`
-	IsActive     bool      `gorm:"not null;default:true" json:"isActive"`
-	CategoryID   uint      `gorm:"not null" json:"categoryId"`
-	RestaurantID uint      `gorm:"not null" json:"restaurantID"`
-	UserID       uint      `gorm:"not null" json:"-"`
+	Name         string     `gorm:"not null" json:"name"`
+	EnName       string     `gorm:"not null" json:"enName"`
+	Details      string     `gorm:"not null" json:"details"`
+	EnDetails    string     `gorm:"not null" json:"enDetails"`
+	Image        string     `json:"image"`
+	Price        int        `json:"price"`
+	Options1     OptionsArr `json:"options1"`
+	Options2     OptionsArr `json:"options2"`
+	IsActive     bool       `gorm:"not null;default:true" json:"isActive"`
+	CategoryID   uint       `gorm:"not null" json:"categoryId"`
+	RestaurantID uint       `gorm:"not null" json:"restaurantID"`
+	UserID       uint       `gorm:"not null" json:"-"`
 }
 
 type Options struct {
@@ -31,29 +33,29 @@ type Options struct {
 
 // schemas
 type PostProduct struct {
-	Name         string    `json:"name"`
-	EnName       string    `json:"enName"`
-	Details      string    `json:"details"`
-	EnDetails    string    `json:"enDetails"`
-	Image        string    `json:"image"`
-	Price        int       `json:"price"`
-	Options1     []Options `json:"options1"`
-	Options2     []Options `json:"options2"`
-	IsActive     bool      `json:"isActive"`
-	CategoryID   uint      `json:"categoryId"`
-	RestaurantID uint      `json:"restaurantID"`
-	UserID       uint      `json:"userId"`
+	Name         string     `json:"name"`
+	EnName       string     `json:"enName"`
+	Details      string     `json:"details"`
+	EnDetails    string     `json:"enDetails"`
+	Image        string     `json:"image"`
+	Price        int        `json:"price"`
+	Options1     OptionsArr `json:"options1"`
+	Options2     OptionsArr `json:"options2"`
+	IsActive     bool       `json:"isActive"`
+	CategoryID   uint       `json:"categoryId"`
+	RestaurantID uint       `json:"restaurantID"`
+	UserID       uint       `json:"userId"`
 }
 
 type UpdateProduct struct {
-	Name      string    `json:"name"`
-	EnName    string    `json:"enName"`
-	Details   string    `json:"details"`
-	EnDetails string    `json:"enDetails"`
-	Price     int       `json:"price"`
-	Options1  []Options `json:"options1"`
-	Options2  []Options `json:"options2"`
-	IsActive  bool      `json:"isActive"`
+	Name      string     `json:"name"`
+	EnName    string     `json:"enName"`
+	Details   string     `json:"details"`
+	EnDetails string     `json:"enDetails"`
+	Price     int        `json:"price"`
+	Options1  OptionsArr `json:"options1"`
+	Options2  OptionsArr `json:"options2"`
+	IsActive  bool       `json:"isActive"`
 }
 
 type UpdateProductImage struct {
@@ -69,4 +71,24 @@ func CreateOptions(o string) []Options {
 		return nil
 	}
 	return options
+}
+
+type OptionsArr []Options
+
+// Value converts the Options to a JSON-encoded string to be stored in the database.
+func (oa OptionsArr) Value() (driver.Value, error) {
+	return json.Marshal(oa)
+}
+
+// Scan converts the JSON-encoded string from the database into a Options.
+func (oa *OptionsArr) Scan(value interface{}) error {
+	if value == nil {
+		*oa = []Options{}
+		return nil
+	}
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("invalid type")
+	}
+	return json.Unmarshal(bytes, oa)
 }
