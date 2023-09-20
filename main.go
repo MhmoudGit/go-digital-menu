@@ -26,7 +26,7 @@ func main() {
 	// api routes
 	routes.HomeRoutes(r)
 	// routes.CategoriesRoutes(r)
-	// routes.ProductsRoutes(r)
+	routes.RestaurantsRoutes(r)
 	routes.PlansRoutes(r)
 	routes.AuthRoutes(r)
 

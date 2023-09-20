@@ -15,9 +15,9 @@ type User struct {
 	Phone      string     `gorm:"not null" json:"phone"`
 	StartDate  time.Time  `gorm:"not null" json:"startDate"`
 	EndDate    time.Time  `gorm:"not null" json:"endDate"`
-	Paid       bool       `gorm:"not null, default:'false'" json:"paid"`
-	IsVerified bool       `gorm:"not null, default:'false'" json:"isVerified"`
-	IsActive   bool       `gorm:"not null, default:'true'" json:"isActive"`
+	Paid       bool       `gorm:"not null;default:false" json:"paid"`
+	IsVerified bool       `gorm:"not null;default:false" json:"isVerified"`
+	IsActive   bool       `gorm:"not null;default:true" json:"isActive"`
 	PlanID     uint       `gorm:"not null" json:"planId"`
 	Restaurant Restaurant `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID" json:"-"`
 }

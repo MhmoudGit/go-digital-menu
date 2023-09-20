@@ -15,7 +15,7 @@ type Plan struct {
 	Features StringSlice `gorm:"not null" json:"features"`
 	Price    float64     `gorm:"not null" json:"price"`
 	Duration int         `gorm:"not null" json:"duration"`
-	Discount float64     `gorm:"not null, default:0" json:"discount"`
+	Discount float64     `gorm:"not null;default:0" json:"discount"`
 	Users    []User      `gorm:"foreignKey:PlanID" json:"-"`
 }
 
@@ -38,16 +38,4 @@ func (s *StringSlice) Scan(value interface{}) error {
 		return errors.New("invalid type")
 	}
 	return json.Unmarshal(bytes, s)
-}
-
-// initiate new Plan
-func NewPlan(name, enName string, features StringSlice, price, discount float64, duration int) *Plan {
-	return &Plan{
-		Name:     name,
-		EnName:   enName,
-		Features: features,
-		Price:    price,
-		Duration: duration,
-		Discount: discount,
-	}
 }

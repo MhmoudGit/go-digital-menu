@@ -8,7 +8,7 @@ import (
 
 type Restaurant struct {
 	gorm.Model
-	UserID     uint       `gorm:"not null" json:"userId"`
+	UserID     uint       `gorm:"not null;unique" json:"userId"`
 	Name       string     `gorm:"not null" json:"name"`
 	EnName     string     `gorm:"not null" json:"enName"`
 	Image      string     `json:"image"`
@@ -19,15 +19,15 @@ type Restaurant struct {
 	OpenedTo   time.Time  `gorm:"not null" json:"openedTo"`
 	Url        string     `json:"url"`
 	GoogleMap  string     `json:"googleMap"`
-	Discount   int        `gorm:"not null" json:"discount"`
-	Tables     int        `gorm:"not null, default:0" json:"tables"`
-	IsActive   bool       `gorm:"not null, default:true" json:"isActive"`
+	Discount   int        `gorm:"not null;default:0" json:"discount"`
+	Tables     int        `gorm:"not null;default:0" json:"tables"`
+	IsActive   bool       `gorm:"not null;default:true" json:"isActive"`
 	Categories []Category `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:RestaurantID" json:"-"`
 	Products   []Product  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:RestaurantID" json:"-"`
 }
 
 // initiate new Restaurant
-func NewRestaurant(userId uint, name, enName, image, theme, cover, whatsapp, url, googleMap string, openedFrom, openedTo time.Time, discount, table int) *Restaurant {
+func NewRestaurant(userId uint, name, enName, image, theme, cover, whatsapp, url, googleMap string, openedFrom, openedTo time.Time, tables int) *Restaurant {
 	return &Restaurant{
 		UserID:     userId,
 		Name:       name,
@@ -40,8 +40,33 @@ func NewRestaurant(userId uint, name, enName, image, theme, cover, whatsapp, url
 		OpenedTo:   openedTo,
 		Url:        url,
 		GoogleMap:  googleMap,
-		Discount:   discount,
-		Tables:     table,
+		Discount:   0,
+		Tables:     tables,
 		IsActive:   true,
 	}
+}
+
+type UpdateRestaurant struct {
+	Name       string    `json:"name"`
+	EnName     string    `json:"enName"`
+	Whatsapp   string    `json:"whatsapp"`
+	OpenedFrom time.Time `json:"openedFrom"`
+	OpenedTo   time.Time `json:"openedTo"`
+	Url        string    `json:"url"`
+	GoogleMap  string    `json:"googleMap"`
+	Discount   int       `json:"discount"`
+	Tables     int       `json:"tables"`
+	IsActive   bool      `json:"isActive"`
+}
+
+type UpdateRestaurantImage struct {
+	Image string `json:"image"`
+}
+
+type UpdateRestaurantTheme struct {
+	Theme string `json:"theme"`
+}
+
+type UpdateRestaurantCover struct {
+	Cover string `json:"cover"`
 }

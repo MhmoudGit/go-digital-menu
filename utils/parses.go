@@ -23,9 +23,9 @@ func Parseint(w http.ResponseWriter, str string) int {
 	intStr, err := strconv.Atoi(str)
 	if err != nil {
 		// Handle the error if the conversion fails
-		err := fmt.Sprintf("%v should be of type int", str)
+		err := fmt.Sprintf("%v should be of type int", &str)
 		http.Error(w, err, http.StatusUnprocessableEntity)
-		return 0
+		return intStr
 	}
 	return intStr
 }
