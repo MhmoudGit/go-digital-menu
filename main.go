@@ -18,17 +18,20 @@ func main() {
 
 	// declaring chi mux as r
 	r := chi.NewRouter()
+
 	// A good base middleware stack
 	r.Use(cors.Handler(corsMiddleware))
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
 	// api routes
 	routes.HomeRoutes(r)
-	// routes.CategoriesRoutes(r)
-	routes.RestaurantsRoutes(r)
 	routes.PlansRoutes(r)
 	routes.AuthRoutes(r)
+	routes.RestaurantsRoutes(r)
+	routes.CategoriesRoutes(r)
+	routes.ProductsRoutes(r)
 
 	// listening on port 8000
 	http.ListenAndServe("127.0.0.1:8000", r)
