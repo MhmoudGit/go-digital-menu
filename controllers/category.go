@@ -11,7 +11,7 @@ import (
 )
 
 func AllCategories(w http.ResponseWriter, r *http.Request) {
-	userQueryParam := u.ParseUint64(w, r.URL.Query().Get("Userid"))
+	userQueryParam := u.ParseUint64(w, r.URL.Query().Get("userid"))
 	data, err := h.GetCategories(database.Db, userQueryParam)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)

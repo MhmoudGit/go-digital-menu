@@ -11,7 +11,7 @@ import (
 )
 
 func AllProducts(w http.ResponseWriter, r *http.Request) {
-	providerQueryParam := u.ParseUint64(w, r.URL.Query().Get("userId"))
+	providerQueryParam := u.ParseUint64(w, r.URL.Query().Get("userid"))
 	categoryQueryParam := u.ParseUint64(w, r.URL.Query().Get("categoryid"))
 	data, err := h.GetProducts(database.Db, providerQueryParam, categoryQueryParam)
 	if err != nil {
