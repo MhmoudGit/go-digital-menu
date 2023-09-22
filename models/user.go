@@ -61,7 +61,7 @@ func NewUser(duration int, planId uint, email, password, restaturantName, phone 
 		PlanID:         planId,
 		Restaurant: Restaurant{
 			Name: restaturantName,
-			Url:  "url" + restaturantName,
+			Url:  "url/" + restaturantName,
 		},
 	}
 }

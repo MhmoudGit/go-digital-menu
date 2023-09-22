@@ -11,9 +11,8 @@ import (
 )
 
 func AllProducts(w http.ResponseWriter, r *http.Request) {
-	providerQueryParam := u.ParseUint64(w, r.URL.Query().Get("userid"))
 	categoryQueryParam := u.ParseUint64(w, r.URL.Query().Get("categoryid"))
-	data, err := h.GetProducts(database.Db, providerQueryParam, categoryQueryParam)
+	data, err := h.GetProducts(database.Db, categoryQueryParam)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
@@ -32,7 +31,7 @@ func SingleProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostProduct(w http.ResponseWriter, r *http.Request) {
-	userId := h.GetUserIdClaim(r)
+	resId := h.GetResIdClaim(r)
 	// Parse the form data, including the uploaded file
 	u.ParseMultipartForm(w, r)
 
@@ -47,8 +46,7 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 		Options2:     models.CreateOptions(r.FormValue("options2")),
 		IsActive:     r.FormValue("isActive") == "true",
 		CategoryID:   u.ParseUint64(w, r.FormValue("categoryId")),
-		RestaurantID: u.ParseUint64(w, r.FormValue("restaurantId")),
-		UserID:       userId,
+		RestaurantID: resId,
 	}
 	// store the struct data into the database
 	err := h.CreateProduct(database.Db, &validProduct)
@@ -62,7 +60,6 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	userId := h.GetUserIdClaim(r)
 	var validProduct models.UpdateProduct
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validProduct, w)
@@ -70,7 +67,7 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
-	err = h.UpdateProduct(database.Db, &validProduct, id, userId)
+	err = h.UpdateProduct(database.Db, &validProduct, id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -80,14 +77,13 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProductImage(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	userId := h.GetUserIdClaim(r)
 	u.ParseMultipartForm(w, r)
 	validProductImage := models.UpdateProductImage{
 		Image: u.UploadFile(w, r, "image"),
 	}
 	if validProductImage.Image != "" {
 		// store the struct data into the database
-		err := h.UpdateProductImage(database.Db, &validProductImage, id, userId)
+		err := h.UpdateProductImage(database.Db, &validProductImage, id)
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		}
@@ -97,8 +93,7 @@ func UpdateProductImage(w http.ResponseWriter, r *http.Request) {
 
 func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	userId := h.GetUserIdClaim(r)
-	err := h.DeleteProduct(database.Db, id, userId)
+	err := h.DeleteProduct(database.Db, id)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}

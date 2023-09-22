@@ -35,9 +35,9 @@ func CreateRestaurant(db *gorm.DB, Restaurant *models.Restaurant) error {
 	return nil
 }
 
-func UpdateRestaurant(db *gorm.DB, updateRestaurant *models.UpdateRestaurant, id, userId uint) error {
+func UpdateRestaurant(db *gorm.DB, updateRestaurant *models.UpdateRestaurant, id uint) error {
 	var RestaurantToUpdate models.Restaurant
-	result := db.First(&RestaurantToUpdate, id, userId).Save(updateRestaurant)
+	result := db.First(&RestaurantToUpdate, id).Save(updateRestaurant)
 	if result.Error != nil {
 		return result.Error
 	}

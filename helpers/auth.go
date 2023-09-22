@@ -23,16 +23,16 @@ func AuthinticateUser(db *gorm.DB, email, password string) (bool, error) {
 	return true, nil
 }
 
-func GenerateAccessToken(userID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
+func GenerateAccessToken(resID uint, tokenAuth *jwtauth.JWTAuth) (string, error) {
 	// TokenAuth = jwtauth.New("HS256", []byte(jwtSecret), nil)
 	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
-		"id":  userID,
+		"id":  resID,
 		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	})
 	return tokenString, nil
 }
 
-func GetUserIdClaim(r *http.Request) uint {
+func GetResIdClaim(r *http.Request) uint {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	var iduint uint
 	id, ok := claims["id"].(float64)

@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetCategories(db *gorm.DB, userID uint) ([]models.Category, error) {
+func GetCategories(db *gorm.DB, resID uint) ([]models.Category, error) {
 	var categories []models.Category
-	result := db.Where("user_id = ?", userID).Find(&categories)
+	result := db.Where("restaurant_id = ?", resID).Find(&categories)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -31,7 +31,6 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 		EnName:       category.EnName,
 		Logo:         category.Logo,
 		RestaurantID: category.RestaurantID,
-		UserID:       category.UserID,
 	}
 
 	// Create the category in the database
@@ -43,9 +42,9 @@ func CreateCategory(db *gorm.DB, category *models.PostCategory) error {
 	return nil
 }
 
-func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, userId uint) error {
+func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, resId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id, userId).Save(updateCategory)
+	result := db.First(&categoryToUpdate, id, resId).Save(updateCategory)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -53,9 +52,9 @@ func UpdateCategory(db *gorm.DB, updateCategory *models.UpdateCategory, id, user
 	return nil
 }
 
-func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id, userId uint) error {
+func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage, id, resId uint) error {
 	var categoryToUpdate models.Category
-	result := db.First(&categoryToUpdate, id, userId).Save(CategoryImage)
+	result := db.First(&categoryToUpdate, id, resId).Save(CategoryImage)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -63,9 +62,9 @@ func UpdateCategoryImage(db *gorm.DB, CategoryImage *models.UpdateCategoryImage,
 	return nil
 }
 
-func DeleteCategory(db *gorm.DB, id, userId uint) error {
+func DeleteCategory(db *gorm.DB, id, resId uint) error {
 	var category models.Category
-	result := db.Delete(&category, id, userId)
+	result := db.Delete(&category, id, resId)
 	if result.Error != nil {
 		return result.Error
 	}

@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetProducts(db *gorm.DB, providerID uint, categoryID uint) ([]models.Product, error) {
+func GetProducts(db *gorm.DB, categoryID uint) ([]models.Product, error) {
 	var products []models.Product
-	result := db.Where("provider_id = ? AND category_id = ? AND is_active = true", providerID, categoryID).Find(&products)
+	result := db.Where("category_id = ? AND is_active = true", categoryID).Find(&products)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -47,9 +47,9 @@ func CreateProduct(db *gorm.DB, Product *models.PostProduct) error {
 	return nil
 }
 
-func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id, providerId uint) error {
+func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id uint) error {
 	var ProductToUpdate models.Product
-	result := db.First(&ProductToUpdate, id, providerId).Save(updateProduct)
+	result := db.First(&ProductToUpdate, id).Save(updateProduct)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -57,9 +57,9 @@ func UpdateProduct(db *gorm.DB, updateProduct *models.UpdateProduct, id, provide
 	return nil
 }
 
-func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id, providerId uint) error {
+func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id uint) error {
 	var ProductToUpdate models.Product
-	result := db.First(&ProductToUpdate, id, providerId).Save(ProductImage)
+	result := db.First(&ProductToUpdate, id).Save(ProductImage)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -67,9 +67,9 @@ func UpdateProductImage(db *gorm.DB, ProductImage *models.UpdateProductImage, id
 	return nil
 }
 
-func DeleteProduct(db *gorm.DB, id, providerId uint) error {
+func DeleteProduct(db *gorm.DB, id uint) error {
 	var Product models.Product
-	result := db.Delete(&Product, id, providerId)
+	result := db.Delete(&Product, id)
 	if result.Error != nil {
 		return result.Error
 	}

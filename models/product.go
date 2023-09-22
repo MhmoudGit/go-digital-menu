@@ -22,7 +22,6 @@ type Product struct {
 	IsActive     bool       `gorm:"not null;default:true" json:"isActive"`
 	CategoryID   uint       `gorm:"not null" json:"categoryId"`
 	RestaurantID uint       `gorm:"not null" json:"restaurantID"`
-	UserID       uint       `gorm:"not null" json:"-"`
 }
 
 type Options struct {
@@ -44,7 +43,6 @@ type PostProduct struct {
 	IsActive     bool       `json:"isActive"`
 	CategoryID   uint       `json:"categoryId"`
 	RestaurantID uint       `json:"restaurantID"`
-	UserID       uint       `json:"userId"`
 }
 
 type UpdateProduct struct {

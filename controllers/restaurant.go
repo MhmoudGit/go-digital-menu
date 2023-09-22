@@ -20,36 +20,35 @@ func SingleRestaurant(w http.ResponseWriter, r *http.Request) {
 	}
 	u.JsonMarshal(data, w)
 }
-
-func PostRestaurant(w http.ResponseWriter, r *http.Request) {
-	userId := h.GetUserIdClaim(r)
-	u.ParseMultipartForm(w, r)
-	newRestaurant := models.NewRestaurant(
-		userId,
-		r.FormValue("name"),
-		r.FormValue("enName"),
-		u.UploadFile(w, r, "image"),
-		u.UploadFile(w, r, "theme"),
-		u.UploadFile(w, r, "cover"),
-		r.FormValue("whatsapp"),
-		r.FormValue("url"),
-		r.FormValue("googleMap"),
-		u.ParseTime(r.FormValue("openedFrom")),
-		u.ParseTime(r.FormValue("openedTo")),
-		u.Parseint(w, r.FormValue("tables")),
-	)
-	// store the struct data into the database
-	err := h.CreateRestaurant(database.Db, newRestaurant)
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		return 
-	}
-	u.JsonMarshal(&newRestaurant.ID, w)
-}
+//create new restaurant feature
+// func PostRestaurant(w http.ResponseWriter, r *http.Request) {
+// 	userId := h.GetUserIdClaim(r)
+// 	u.ParseMultipartForm(w, r)
+// 	newRestaurant := models.NewRestaurant(
+// 		userId,
+// 		r.FormValue("name"),
+// 		r.FormValue("enName"),
+// 		u.UploadFile(w, r, "image"),
+// 		u.UploadFile(w, r, "theme"),
+// 		u.UploadFile(w, r, "cover"),
+// 		r.FormValue("whatsapp"),
+// 		r.FormValue("url"),
+// 		r.FormValue("googleMap"),
+// 		u.ParseTime(r.FormValue("openedFrom")),
+// 		u.ParseTime(r.FormValue("openedTo")),
+// 		u.Parseint(w, r.FormValue("tables")),
+// 	)
+// 	// store the struct data into the database
+// 	err := h.CreateRestaurant(database.Db, newRestaurant)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusUnprocessableEntity)
+// 		return 
+// 	}
+// 	u.JsonMarshal(&newRestaurant.ID, w)
+// }
 
 func UpdateRestaurant(w http.ResponseWriter, r *http.Request) {
-	id := u.ParseUint64(w, chi.URLParam(r, "id"))
-	userId := h.GetUserIdClaim(r)
+	resId := h.GetResIdClaim(r)
 	var validRestaurant models.UpdateRestaurant
 	// store the json request body into my struct
 	err := u.JsonDecoder(r.Body, &validRestaurant, w)
@@ -57,7 +56,7 @@ func UpdateRestaurant(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
-	err = h.UpdateRestaurant(database.Db, &validRestaurant, id, userId)
+	err = h.UpdateRestaurant(database.Db, &validRestaurant, resId)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return

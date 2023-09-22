@@ -15,8 +15,8 @@ func RestaurantsRoutes(r chi.Router) {
 		r.Route("/", func(r chi.Router) {
 			r.Use(jwtauth.Verifier(c.TokenAuth))
 			r.Use(jwtauth.Authenticator)
-			r.Post("/", c.PostRestaurant)
-			r.Put("/{id}", c.UpdateRestaurant)
+			// r.Post("/", c.PostRestaurant)  Create new restaurant
+			r.Put("/", c.UpdateRestaurant)
 			r.Delete("/{id}", c.DeleteRestaurant)
 			r.Patch("/{id}/image", c.UpdateRestaurantImage)
 			r.Patch("/{id}/cover", c.UpdateRestaurantCover)
