@@ -72,5 +72,5 @@ func withGracefulShuDown(r *chi.Mux) {
 	}
 
 	database.Close()
-	log.Println("Server gracefully stopped")
+	log.Println("Server gracefully stopped...")
 }
