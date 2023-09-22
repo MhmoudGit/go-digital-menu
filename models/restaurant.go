@@ -10,13 +10,13 @@ type Restaurant struct {
 	gorm.Model
 	UserID     uint       `gorm:"not null;unique" json:"userId"`
 	Name       string     `gorm:"not null" json:"name"`
-	EnName     string     `gorm:"not null" json:"enName"`
+	EnName     string     `gorm:"not null;default:english name" json:"enName"`
 	Image      string     `json:"image"`
-	Theme      string     `gorm:"not null" json:"theme"`
-	Cover      string     `gorm:"not null" json:"cover"`
-	Whatsapp   string     `gorm:"not null" json:"whatsapp"`
-	OpenedFrom time.Time  `gorm:"not null" json:"openedFrom"`
-	OpenedTo   time.Time  `gorm:"not null" json:"openedTo"`
+	Theme      string     `gorm:"not null;default:english name" json:"theme"`
+	Cover      string     `gorm:"not null;default:english name" json:"cover"`
+	Whatsapp   string     `gorm:"not null;default:english name" json:"whatsapp"`
+	OpenedFrom time.Time  `json:"openedFrom"`
+	OpenedTo   time.Time  `json:"openedTo"`
 	Url        string     `json:"url"`
 	GoogleMap  string     `json:"googleMap"`
 	Discount   int        `gorm:"not null;default:0" json:"discount"`

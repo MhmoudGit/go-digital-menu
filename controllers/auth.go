@@ -71,7 +71,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		u.ParseUint64(w, r.FormValue("planId")),
 		r.FormValue("email"),
 		r.FormValue("password"),
-		r.FormValue("name"),
+		r.FormValue("restaurantName"),
 		r.FormValue("phone"),
 	)
 	// check if email exists in db

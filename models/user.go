@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -9,17 +10,17 @@ import (
 
 type User struct {
 	gorm.Model
-	Email      string     `gorm:"not null;index;unique" json:"email"`
-	Password   string     `gorm:"not null" json:"-"`
-	Name       string     `gorm:"not null" json:"name"`
-	Phone      string     `gorm:"not null" json:"phone"`
-	StartDate  time.Time  `gorm:"not null" json:"startDate"`
-	EndDate    time.Time  `gorm:"not null" json:"endDate"`
-	Paid       bool       `gorm:"not null;default:false" json:"paid"`
-	IsVerified bool       `gorm:"not null;default:false" json:"isVerified"`
-	IsActive   bool       `gorm:"not null;default:true" json:"isActive"`
-	PlanID     uint       `gorm:"not null" json:"planId"`
-	Restaurant Restaurant `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID" json:"-"`
+	Email          string     `gorm:"not null;index;unique" json:"email"`
+	Password       string     `gorm:"not null" json:"-"`
+	RestaurantName string     `gorm:"not null" json:"restaturantName"`
+	Phone          string     `gorm:"not null" json:"phone"`
+	StartDate      time.Time  `gorm:"not null" json:"startDate"`
+	EndDate        time.Time  `gorm:"not null" json:"endDate"`
+	Paid           bool       `gorm:"not null;default:false" json:"paid"`
+	IsVerified     bool       `gorm:"not null;default:false" json:"isVerified"`
+	IsActive       bool       `gorm:"not null;default:true" json:"isActive"`
+	PlanID         uint       `gorm:"not null" json:"planId"`
+	Restaurant     Restaurant `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID" json:"-"`
 }
 
 // Verify Password.
@@ -44,17 +45,23 @@ func (u *User) HashPassword(password string) error {
 }
 
 // initiate new user
-func NewUser(duration int, planId uint, email, password, name, phone string) *User {
+func NewUser(duration int, planId uint, email, password, restaturantName, phone string) *User {
+	lowerCaseaName := strings.ToLower(restaturantName)
+	restaturantName = strings.ReplaceAll(lowerCaseaName, " ", "")
 	return &User{
-		Email:      email,
-		Password:   password,
-		Name:       name,
-		Phone:      phone,
-		StartDate:  time.Now(),
-		EndDate:    time.Now().AddDate(0, duration, 0),
-		Paid:       false,
-		IsVerified: false,
-		IsActive:   true,
-		PlanID:     planId,
+		Email:          email,
+		Password:       password,
+		RestaurantName: restaturantName,
+		Phone:          phone,
+		StartDate:      time.Now(),
+		EndDate:        time.Now().AddDate(0, duration, 0),
+		Paid:           false,
+		IsVerified:     false,
+		IsActive:       true,
+		PlanID:         planId,
+		Restaurant: Restaurant{
+			Name: restaturantName,
+			Url:  "url" + restaturantName,
+		},
 	}
 }
