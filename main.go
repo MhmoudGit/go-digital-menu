@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,9 +14,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load the environment variables from the .env file
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+	}
 	// database connection
 	database.Connect()
 	database.AutoMigrateDb()
@@ -50,7 +56,7 @@ var corsMiddleware = cors.Options{
 func withGracefulShuDown(r *chi.Mux) {
 	// listening on port 8000
 	server := &http.Server{
-		Addr:    "127.0.0.1:8000",
+		Addr:    "0.0.0.0:8000",
 		Handler: r,
 	}
 	go func() {
