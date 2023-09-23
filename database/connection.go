@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/MhmoudGit/go-digital-menu/models"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,10 +14,6 @@ var Db *gorm.DB
 
 func Connect() {
 	var err error
-	// Load the environment variables from the .env file
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Error loading .env file")
-	}
 	dbUserName := os.Getenv("DB_USERNAME")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbname := os.Getenv("DB_NAME")

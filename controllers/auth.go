@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/go-chi/jwtauth/v5"
-	"github.com/joho/godotenv"
 
 	"github.com/MhmoudGit/go-digital-menu/database"
 	h "github.com/MhmoudGit/go-digital-menu/helpers"
@@ -17,10 +15,6 @@ import (
 var TokenAuth *jwtauth.JWTAuth = jwtauth.New("HS256", []byte(getSecret()), nil)
 
 func getSecret() string {
-	// Load the environment variables from the .env file
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Error loading .env file")
-	}
 	jwtSecret := os.Getenv("JWT_SECRET")
 	return jwtSecret
 }
