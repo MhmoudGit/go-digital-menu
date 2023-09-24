@@ -56,7 +56,7 @@ var corsMiddleware = cors.Options{
 func withGracefulShuDown(r *chi.Mux) {
 	// listening on port 8000
 	server := &http.Server{
-		Addr:    "0.0.0.0:8000",
+		Addr:    "127.0.0.1:8000",
 		Handler: r,
 	}
 	go func() {

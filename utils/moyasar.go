@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type ResponseData struct {
@@ -18,6 +20,9 @@ type ResponseData struct {
 }
 
 func GetPayment(id string) ResponseData {
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+	}
 	// Define the URL you want to make the GET request to.
 	url := "https://api.moyasar.com/v1/payments/" + id
 

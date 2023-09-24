@@ -27,7 +27,7 @@ func GetUser(db *gorm.DB, id uint) (models.User, error) {
 
 func GetUserByEmail(db *gorm.DB, email string) (models.User, error) {
 	var user models.User
-	result := db.Where("email = ?", email).First(&user)
+	result := db.Preload("Restaurant").Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
