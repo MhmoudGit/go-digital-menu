@@ -47,11 +47,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if user.IsActive && userAuth {
 		// Generate an access token for the authenticated User
-		accessToken, err := h.GenerateAccessToken(user.Restaurant.ID, TokenAuth)
+		accessToken, err := h.GenerateToken(user.ID, user.Restaurant.ID, TokenAuth, 1)
 		if err != nil {
 			http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
 			return
 		}
+		h.SetCookies(user.ID, user.Restaurant.ID, TokenAuth, w)
 		// Return the access token to the client
 		w.Header().Set("Authorization", "Bearer "+accessToken)
 		u.JsonMarshal(&user, w)
@@ -90,4 +91,34 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User created successfully"))
+}
+
+func RefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+	oldRefreshToken := jwtauth.TokenFromCookie(r)
+	fmt.Println(oldRefreshToken)
+	validToken, err := jwtauth.VerifyToken(TokenAuth, oldRefreshToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	claims := validToken.PrivateClaims()
+	resId := int(claims["id"].(float64))
+	userId := int(claims["userId"].(float64))
+	user, err := h.GetUser(database.Db, uint(userId))
+	if err != nil {
+		http.Error(w, "not found", http.StatusUnauthorized)
+		return
+	}
+	if user.Restaurant.ID != uint(resId) {
+		http.Error(w, "not found", http.StatusUnauthorized)
+		return
+	}
+	accessToken, err := h.GenerateToken(uint(userId), uint(resId), TokenAuth, 1)
+	if err != nil {
+		http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
+		return
+	}
+	// Return the refresh token to the client
+	u.JsonMarshal(&accessToken, w)
+	w.WriteHeader(http.StatusOK)
 }

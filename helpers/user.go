@@ -18,7 +18,7 @@ func GetUsers(db *gorm.DB, userID uint) ([]models.User, error) {
 
 func GetUser(db *gorm.DB, id uint) (models.User, error) {
 	var User models.User
-	result := db.First(&User, id)
+	result := db.Preload("Restaurant").First(&User, id)
 	if result.Error != nil {
 		return User, result.Error
 	}
