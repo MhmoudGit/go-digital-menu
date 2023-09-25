@@ -45,15 +45,15 @@ func CreateUser(db *gorm.DB, User *models.User) error {
 	return nil
 }
 
-// func UpdateUser(db *gorm.DB, updateUser *models.UpdateUser, id uint) error {
-// 	var UserToUpdate models.User
-// 	result := db.First(&UserToUpdate, id).Save(updateUser)
-// 	if result.Error != nil {
-// 		return result.Error
-// 	}
-// 	log.Println("User was updated successfully....")
-// 	return nil
-// }
+func UpdateUser(db *gorm.DB, updateUser *models.User, id uint) error {
+	var UserToUpdate models.User
+	result := db.First(&UserToUpdate, id).Save(updateUser)
+	if result.Error != nil {
+		return result.Error
+	}
+	log.Println("User was updated successfully....")
+	return nil
+}
 
 // func UpdateUserImage(db *gorm.DB, UserImage *models.UpdateUserImage, id uint) error {
 // 	var UserToUpdate models.User

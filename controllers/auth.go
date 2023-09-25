@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sync"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/joho/godotenv"
 
@@ -45,7 +47,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "wrong email or password", http.StatusUnauthorized)
 		return
 	}
-	if user.IsActive && userAuth {
+	if user.IsActive && userAuth && user.IsVerified {
 		// Generate an access token for the authenticated User
 		accessToken, err := h.GenerateToken(user.ID, user.Restaurant.ID, TokenAuth, 1)
 		if err != nil {
@@ -61,10 +63,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("wrong email or password"))
 	}
-
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	var wg sync.WaitGroup
 	// Parse the form data, including the uploaded file
 	u.ParseMultipartForm(w, r)
 	newUser := models.NewUser(
@@ -89,8 +91,15 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+	fmt.Println("going to send email")
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		u.SendEmail(newUser.ID, newUser.Email)
+	}()
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User created successfully"))
+	wg.Wait()
 }
 
 func RefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -115,10 +124,28 @@ func RefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	accessToken, err := h.GenerateToken(uint(userId), uint(resId), TokenAuth, 1)
 	if err != nil {
-		http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
+		http.Error(w, "failed to generate access token", http.StatusInternalServerError)
 		return
 	}
 	// Return the refresh token to the client
 	u.JsonMarshal(&accessToken, w)
 	w.WriteHeader(http.StatusOK)
+}
+
+func VerifyEmail(w http.ResponseWriter, r *http.Request) {
+	id := u.ParseUint64(w, chi.URLParam(r, "id"))
+	user, err := h.GetUser(database.Db, id)
+	if err != nil {
+		http.Error(w, "failed to verify email", http.StatusBadRequest)
+		return
+	}
+	if user.IsVerified {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("User email is already verified"))
+		return
+	}
+	user.IsVerified = true
+	h.UpdateUser(database.Db, &user, user.ID)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("User email verified successfully"))
 }

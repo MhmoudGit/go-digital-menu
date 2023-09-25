@@ -30,6 +30,12 @@ func (u *User) VerifyPassword(password string) error {
 }
 
 // Verify Password.
+func (u *User) VerifyEmail(isVerified bool) bool {
+	return u.IsVerified
+}
+
+
+// Verify Password.
 func (u *User) VerifyActivity(isActive bool) bool {
 	return u.IsActive
 }
