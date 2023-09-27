@@ -12,6 +12,7 @@ but this time in golang and with no orders or delivery maybe will implement that
 ## Features to add [in progress]:
   - payment gateway
   - email verification [Done]
+  - change password [Done]
   - resset password
   - admins controllers
   - sorting by position for drag and drop features
