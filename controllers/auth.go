@@ -149,3 +149,32 @@ func VerifyEmail(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User email verified successfully"))
 }
+
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	userId := h.GetUserIdClaim(r)
+	var changePassword models.ChangePassword
+	// store the json request body into my struct
+	err := u.JsonDecoder(r.Body, &changePassword, w)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	user, err := h.GetUser(database.Db, userId)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+	err = user.VerifyPassword(changePassword.OldPassword)
+	if err != nil {
+		http.Error(w, "try again", http.StatusBadRequest)
+		return
+	}
+	err = user.HashPassword(changePassword.NewPassword)
+	if err != nil {
+		http.Error(w, "error hashing new password", http.StatusBadRequest)
+		return
+	}
+	h.UpdateUser(database.Db, &user, user.ID)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("password changed successfully"))
+}

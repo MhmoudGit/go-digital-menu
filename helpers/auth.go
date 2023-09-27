@@ -44,6 +44,17 @@ func GetResIdClaim(r *http.Request) uint {
 	return 0
 }
 
+func GetUserIdClaim(r *http.Request) uint {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	var userIduint uint
+	id, ok := claims["userId"].(float64)
+	if ok {
+		userIduint = uint(math.Floor(id))
+		return userIduint
+	}
+	return 0
+}
+
 func SetCookies(userId,resID uint, tokenAuth *jwtauth.JWTAuth, w http.ResponseWriter) {
 	refreshToken, err := GenerateToken(userId,resID, tokenAuth, 24)
 	if err != nil {

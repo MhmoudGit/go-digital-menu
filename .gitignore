@@ -9,6 +9,7 @@
 *.dylib
 .env
 /uploads/
+/config/
 
 # Test binary, built with `go test -c`
 *.test

@@ -55,22 +55,12 @@ func UpdateUser(db *gorm.DB, updateUser *models.User, id uint) error {
 	return nil
 }
 
-// func UpdateUserImage(db *gorm.DB, UserImage *models.UpdateUserImage, id uint) error {
-// 	var UserToUpdate models.User
-// 	result := db.First(&UserToUpdate, id).Save(UserImage)
-// 	if result.Error != nil {
-// 		return result.Error
-// 	}
-// 	log.Println("User was updated successfully....")
-// 	return nil
-// }
-
-// func DeleteUser(db *gorm.DB, id uint) error {
-// 	var User models.User
-// 	result := db.Delete(&User, id)
-// 	if result.Error != nil {
-// 		return result.Error
-// 	}
-// 	log.Println("User was deleted successfully....")
-// 	return nil
-// }
+func DeleteUser(db *gorm.DB, id uint) error {
+	var User models.User
+	result := db.Delete(&User, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	log.Println("User was deleted successfully....")
+	return nil
+}

@@ -7,6 +7,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+type ChangePassword struct {
+	OldPassword       string     `json:"oldPassword"`
+	NewPassword       string     `json:"newPassword"`
+}
 
 type User struct {
 	gorm.Model
