@@ -14,7 +14,7 @@ but this time in golang and with no orders or delivery maybe will implement that
   - payment gateway
   - email verification [Done]
   - change password [Done]
-  - reset password
+  - reset password [Done]
   - admins controllers
   - sorting by position for drag and drop features
   - needs documentation

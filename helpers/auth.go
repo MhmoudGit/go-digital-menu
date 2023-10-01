@@ -28,7 +28,7 @@ func GenerateToken(userId,resID uint, tokenAuth *jwtauth.JWTAuth, expireTime tim
 	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
 		"userId": userId,
 		"id":  resID,
-		"exp": time.Now().Add(time.Hour * expireTime).Unix(),
+		"exp": time.Now().Add(expireTime).Unix(),
 	})
 	return tokenString, nil
 }

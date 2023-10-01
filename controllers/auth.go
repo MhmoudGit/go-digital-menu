@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
@@ -94,8 +95,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("going to send email")
 	wg.Add(1)
 	go func() {
+		body := fmt.Sprintf("Body: click on the link to verify your email: http://localhost:8000/auth/verify-email/%v", newUser.ID)
 		defer wg.Done()
-		u.SendEmail(newUser.ID, newUser.Email)
+		u.SendEmail(body, newUser.Email)
 	}()
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User created successfully"))
@@ -122,7 +124,7 @@ func RefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "not found", http.StatusUnauthorized)
 		return
 	}
-	accessToken, err := h.GenerateToken(uint(userId), uint(resId), TokenAuth, 1)
+	accessToken, err := h.GenerateToken(uint(userId), uint(resId), TokenAuth, time.Hour*1)
 	if err != nil {
 		http.Error(w, "failed to generate access token", http.StatusInternalServerError)
 		return
@@ -170,6 +172,75 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = user.HashPassword(changePassword.NewPassword)
+	if err != nil {
+		http.Error(w, "error hashing new password", http.StatusBadRequest)
+		return
+	}
+	h.UpdateUser(database.Db, &user, user.ID)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("password changed successfully"))
+}
+
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	var wg sync.WaitGroup
+	var user models.User
+	// store the json request body into my struct
+	err := u.JsonDecoder(r.Body, &user.Email, w)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	user, err = h.GetUserByEmail(database.Db, user.Email)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+	tempToken, err := h.GenerateToken(uint(user.ID), uint(user.Restaurant.ID), TokenAuth, time.Minute*5)
+	if err != nil {
+		http.Error(w, "failed to generate access token", http.StatusInternalServerError)
+		return
+	}
+	wg.Add(1)
+	go func() {
+		body := fmt.Sprintf("click on the link to verify your email: http://localhost:8000/auth/reset-password/%v", tempToken)
+		defer wg.Done()
+		u.SendEmail(body, user.Email)
+	}()
+	wg.Wait()
+}
+
+func ResetPassword(w http.ResponseWriter, r *http.Request) {
+	// get token from uri
+	tempToken := chi.URLParam(r, "token")
+	var resetPassword models.ResetPassword
+	// validate the token
+	validToken, err := jwtauth.VerifyToken(TokenAuth, tempToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	// get the userid from claims
+	claims := validToken.PrivateClaims()
+	userId := int(claims["userId"].(float64))
+	// store the json request body into my struct
+	err = u.JsonDecoder(r.Body, &resetPassword, w)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	//get user
+	user, err := h.GetUser(database.Db, uint(userId))
+	if err != nil {
+		http.Error(w, "not found", http.StatusUnauthorized)
+		return
+	}
+	// store the new password
+	if resetPassword.NewPassword != resetPassword.ConfirmPassword {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("failed to change password"))
+		return
+	}
+	err = user.HashPassword(resetPassword.NewPassword)
 	if err != nil {
 		http.Error(w, "error hashing new password", http.StatusBadRequest)
 		return

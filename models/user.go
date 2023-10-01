@@ -7,9 +7,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+
+type ResetPassword struct {
+	NewPassword     string `json:"newPassword"`
+	ConfirmPassword string `json:"confirmPassword"`
+}
 type ChangePassword struct {
-	OldPassword       string     `json:"oldPassword"`
-	NewPassword       string     `json:"newPassword"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 type User struct {
@@ -37,7 +42,6 @@ func (u *User) VerifyPassword(password string) error {
 func (u *User) VerifyEmail(isVerified bool) bool {
 	return u.IsVerified
 }
-
 
 // Verify Password.
 func (u *User) VerifyActivity(isActive bool) bool {

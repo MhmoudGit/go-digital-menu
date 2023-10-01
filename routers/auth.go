@@ -13,6 +13,8 @@ func AuthRoutes(r chi.Router) {
 		r.Post("/login", c.LoginHandler)
 		r.Get("/refresh", c.RefreshTokenHandler)
 		r.Get("/verify-email/{id}", c.VerifyEmail)
+		r.Patch("/forgot-password", c.ForgotPassword)
+		r.Patch("/reset-password/{token}", c.ResetPassword)
 
 		r.Route("/", func(r chi.Router) {
 			r.Use(jwtauth.Verifier(c.TokenAuth))

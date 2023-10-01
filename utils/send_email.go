@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func SendEmail(userId uint, to string) {
+func SendEmail(emailBody string, to string) {
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("Error loading .env file")
 	}
@@ -17,7 +17,7 @@ func SendEmail(userId uint, to string) {
 	emailPwd := os.Getenv("Email_PWD")
 	from := email
 	pass := emailPwd
-	body := fmt.Sprintf("Body: click on the link to verify your email: http://localhost:8000/auth/verify-email/%v", userId)
+	body := emailBody
 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
