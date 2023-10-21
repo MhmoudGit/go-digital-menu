@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/MhmoudGit/go-digital-menu)](https://goreportcard.com/report/github.com/MhmoudGit/go-digital-menu)
+
 # go-digital-menu 
 Implementing Alef Menu with GoLang. 
 While learning golang with this project, trying to make a smaller version of Alef Digital Menu that I made using FastAPI,
