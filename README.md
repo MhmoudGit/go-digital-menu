@@ -11,7 +11,7 @@ but this time in golang and with no orders or delivery maybe will implement that
 
 ## Features to add [in progress]:
   - reset subscriptions
-  - payment gateway
+  - payment gateway [Done]
   - email verification [Done]
   - change password [Done]
   - reset password [Done]

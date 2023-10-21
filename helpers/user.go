@@ -7,7 +7,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetUsers(db *gorm.DB, userID uint) ([]models.User, error) {
+func GetAllUsers(db *gorm.DB) ([]models.User, error) {
+	var users []models.User
+	result := db.Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
+}
+
+func GetUserById(db *gorm.DB, userID uint) ([]models.User, error) {
 	var users []models.User
 	result := db.Where("user_id = ?", userID).Find(&users)
 	if result.Error != nil {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/MhmoudGit/go-digital-menu/database"
 	routes "github.com/MhmoudGit/go-digital-menu/routers"
+	u "github.com/MhmoudGit/go-digital-menu/utils"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -25,7 +26,7 @@ func main() {
 	// database connection
 	database.Connect()
 	database.AutoMigrateDb()
-
+	go u.RunFunctionEvery12Hours()
 	// declaring chi mux as r
 	r := chi.NewRouter()
 

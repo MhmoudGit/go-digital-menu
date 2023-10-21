@@ -1,31 +1,36 @@
 package utils
 
 import (
-    "fmt"
-    "time"
+	"fmt"
+
+	"github.com/MhmoudGit/go-digital-menu/database"
+	h "github.com/MhmoudGit/go-digital-menu/helpers"
+
+	"time"
 )
 
-func CheckSubscriptions() {
-    // Calculate the duration until the next midnight.
-    now := time.Now()
-    nextMidnight := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-    if now.After(nextMidnight) {
-        nextMidnight = nextMidnight.Add(24 * time.Hour)
-    }
-    durationUntilMidnight := nextMidnight.Sub(now)
+func checkSubscriptions() {
+	users, err := h.GetAllUsers(database.Db)
+	if err != nil {
+		fmt.Println(err)
+	}
+	today := time.Now()
 
-    // Create a timer that triggers at midnight and then repeats every 24 hours.
-    timer := time.NewTimer(durationUntilMidnight)
-    defer timer.Stop()
+	for _, user := range users {
+		if user.EndDate.Before(today) && user.Paid {
+			user.Paid = false
+			user.Restaurant.IsActive = false
+			h.UpdateUser(database.Db, &user, user.ID)
+		}
+	}
+}
 
-    for {
-        <-timer.C
-        // Your code to run at midnight goes here.
-        fmt.Println("Running background task at midnight...")
+func RunFunctionEvery12Hours() {
+	ticker := time.NewTicker(12 * time.Second)
+	defer ticker.Stop()
 
-        // Calculate the duration until the next midnight.
-        nextMidnight = nextMidnight.Add(24 * time.Hour)
-        durationUntilMidnight = nextMidnight.Sub(now)
-        timer.Reset(durationUntilMidnight)
-    }
+	for range ticker.C {
+		fmt.Println("checking db")
+		checkSubscriptions()
+	}
 }

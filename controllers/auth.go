@@ -249,3 +249,30 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("password changed successfully"))
 }
+
+func VerifyPayment(w http.ResponseWriter, r *http.Request) {
+	userId := h.GetUserIdClaim(r)
+	var paymentId string
+	err := u.JsonDecoder(r.Body, &paymentId, w)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	payment := u.GetPayment(paymentId)
+	user, err := h.GetUser(database.Db, userId)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+	plan, err := h.GetPlan(database.Db, user.PlanID)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+	if payment.Status == "paid" && !user.Paid && plan.Price == float64(payment.Amount) {
+		user.Paid = true
+		user.IsActive = true
+		user.EndDate = time.Now().AddDate(0, plan.Duration, 0)
+		h.UpdateUser(database.Db, &user, user.ID)
+	}
+}
