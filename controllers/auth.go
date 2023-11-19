@@ -50,7 +50,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if user.IsActive && userAuth && user.IsVerified {
 		// Generate an access token for the authenticated User
-		accessToken, err := h.GenerateToken(user.ID, user.Restaurant.ID, TokenAuth, 1)
+		accessToken, err := h.GenerateToken(user.ID, user.Restaurant.ID, TokenAuth, time.Hour*24)
 		if err != nil {
 			http.Error(w, "Failed to generate access token", http.StatusInternalServerError)
 			return
